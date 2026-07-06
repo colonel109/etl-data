@@ -1,375 +1,206 @@
 {
   "business_partner_code": {
     "raw_name": ["Business Partner"],
-    "dtype": "string",
-    "use": true
+    "dtype": "string"
   },
   "business_partner_name": {
     "raw_name": ["BP Name"],
-    "dtype": "string",
-    "use": true
+    "dtype": "string"
   },
   "team_name": {
     "raw_name": ["Team", "TEAM1"],
-    "dtype": "string",
-    "use": true
+    "dtype": "string"
   },
   "branch_name": {
     "raw_name": ["Branch", "BRANCH1"],
-    "dtype": "string",
-    "use": true
+    "dtype": "string"
   },
   "bp_group_name": {
     "raw_name": ["Group", "GROUPNAME"],
-    "dtype": "string",
-    "use": true
+    "dtype": "string"
   },
   "product_code": {
     "raw_name": ["Item code", "ITEMCODE"],
-    "dtype": "string",
-    "use": true
+    "dtype": "string"
   },
   "product_name": {
     "raw_name": ["Name", "ITEMNAME"],
-    "dtype": "string",
-    "use": true
+    "dtype": "string"
   },
   "source_product_code": {
     "raw_name": ["Source Item", "PITEMCODE"],
-    "dtype": "string",
-    "use": true
+    "dtype": "string"
   },
   "source_product_name": {
     "raw_name": ["Source Name", "PITEMNAME"],
-    "dtype": "string",
-    "use": true
+    "dtype": "string"
   },
-
   "posting_date": {
     "raw_name": ["Posting Date", "DOCDATE"],
-    "dtype": "date",
-    "use": true
+    "dtype": "date"
   },
   "due_date": {
     "raw_name": ["Due Date", "DocDueDate", "DOCDUEDATE"],
-    "dtype": "date",
-    "use": true
+    "dtype": "date"
   },
-  "demand_date": { "raw_name": ["Demand Date"], "dtype": "date", "use": true },
+  "demand_date": {
+    "raw_name": ["Demand Date"],
+    "dtype": "date"
+  },
   "final_delivery_date": {
     "raw_name": ["Final delivery date"],
-    "dtype": "date",
-    "use": true
+    "dtype": "date"
   },
   "invoice_date": {
     "raw_name": ["Invoice Date", "INVDT"],
-    "dtype": "date",
-    "use": true
+    "dtype": "date"
   },
-
   "document_type_name": {
     "raw_name": ["Document Type", "OBJTYPE"],
-    "dtype": "string",
-    "use": true
+    "dtype": "string"
   },
   "sell_type_name": {
     "raw_name": ["Selling Type", "Sell Type", "SALETYPE"],
-    "dtype": "string",
-    "use": true
+    "dtype": "string"
   },
   "cost_account_code": {
     "raw_name": ["Sales Cost account", "Sales Cost Account", "COGACCT"],
-    "dtype": "string",
-    "use": true
+    "dtype": "string"
   },
   "cost_account_name": {
     "raw_name": ["Sales Cost account Name", "COGACCTNAME"],
-    "dtype": "string",
-    "use": true
+    "dtype": "string"
   },
   "cost_center_code": {
     "raw_name": ["Cost Center", "COSTCD"],
-    "dtype": "string",
-    "use": true
+    "dtype": "string"
   },
   "cost_center_name": {
     "raw_name": ["CostCenter Name", "COSTNM"],
-    "dtype": "string",
-    "use": true
+    "dtype": "string"
   },
   "profit_center_code": {
     "raw_name": ["Profitcenter", "PROFITCD"],
-    "dtype": "string",
-    "use": true
+    "dtype": "string"
   },
   "profit_center_name": {
     "raw_name": ["Profit Center Name", "PROFITNM"],
-    "dtype": "string",
-    "use": true
+    "dtype": "string"
   },
   "warehouse_code": {
     "raw_name": ["Warehouse", "WHSCODE"],
-    "dtype": "string",
-    "use": true
+    "dtype": "string"
   },
   "warehouse_name": {
     "raw_name": ["Warehouse Name", "WHSNAME"],
-    "dtype": "string",
-    "use": true
+    "dtype": "string"
   },
   "return_type_code": {
     "raw_name": ["RETURN TYPE CODE", "RTNTPCD"],
-    "dtype": "string",
-    "use": true
+    "dtype": "string"
   },
   "return_type_name": {
     "raw_name": ["RETURN TYPE NAME", "RTNTPNM"],
-    "dtype": "string",
-    "use": true
+    "dtype": "string"
   },
   "account_code": {
     "raw_name": ["계정코드", "ACCTCD"],
-    "dtype": "string",
-    "use": true
+    "dtype": "string"
   },
   "account_name": {
     "raw_name": ["Account Name", "ACCTNM"],
-    "dtype": "string",
-    "use": true
+    "dtype": "string"
   },
   "sales_uom_name": {
     "raw_name": ["Sales UOM", "UNITMSR"],
-    "dtype": "string",
-    "use": true
+    "dtype": "string"
   },
-
   "document_no": {
     "raw_name": ["Document No", "DOCENTRY"],
-    "dtype": "string",
-    "use": true
+    "dtype": "string"
   },
   "invoice_no": {
     "raw_name": ["Invoice No", "INVNO"],
-    "dtype": "string",
-    "use": true
+    "dtype": "string"
   },
   "tax_code": {
     "raw_name": ["Tax Code", "TAXCD"],
-    "dtype": "string",
-    "use": true
+    "dtype": "string"
   },
   "tax_number": {
     "raw_name": ["Tax Number", "TAXNO"],
-    "dtype": "string",
-    "use": true
+    "dtype": "string"
   },
-
   "weight": {
     "raw_name": ["Weight", "WEIGHT"],
-    "dtype": "numeric",
-    "use": true
+    "dtype": "numeric"
   },
   "uom_per_quantity": {
     "raw_name": ["UOM Per Qty", "UOMPQTY"],
-    "dtype": "numeric",
-    "use": true
+    "dtype": "numeric"
   },
   "uom_quantity": {
     "raw_name": ["UOM Qty", "UOMQTY"],
-    "dtype": "numeric",
-    "use": true
+    "dtype": "numeric"
   },
-  "quantity": { "raw_name": ["QTY"], "dtype": "numeric", "use": true },
+  "quantity": {
+    "raw_name": ["QTY"],
+    "dtype": "numeric"
+  },
   "quantity_packaging_uom": {
     "raw_name": [
       "Quantity per packing UOM",
       "Quantity per Packaging UoM",
       "SalPackUn"
     ],
-    "dtype": "numeric",
-    "use": true
+    "dtype": "numeric"
   },
   "box": {
     "raw_name": ["Quantity (Box)", "Qty(Box) Y=V/X", "BOXQTY"],
-    "dtype": "numeric",
-    "use": true
+    "dtype": "numeric"
   },
   "base_price": {
     "raw_name": ["Unit Price", "UNITPRICE"],
-    "dtype": "numeric",
-    "use": true
+    "dtype": "numeric"
   },
   "discount_percent": {
     "raw_name": ["Discount", "DISCOUNT"],
-    "dtype": "numeric",
-    "use": true
+    "dtype": "numeric"
   },
   "discounted_price": {
     "raw_name": ["Price After Discount", "PRICEAFDISC"],
-    "dtype": "numeric",
-    "use": true
+    "dtype": "numeric"
   },
   "discounted_price_tax": {
     "raw_name": ["Unit price", "Gross Price"],
-    "dtype": "numeric",
-    "use": true
+    "dtype": "numeric"
   },
   "sales_revenue": {
     "raw_name": ["Total", "LINETOTAL"],
-    "dtype": "numeric",
-    "use": true
+    "dtype": "numeric"
   },
   "sales_amount_fc": {
     "raw_name": ["Total(FC)", "LINETOTALFC"],
-    "dtype": "numeric",
-    "use": true
+    "dtype": "numeric"
   },
   "tax_amount": {
     "raw_name": ["Tax Amount", "VAT"],
-    "dtype": "numeric",
-    "use": true
+    "dtype": "numeric"
   },
   "tax_amount_fc": {
     "raw_name": ["Tax Amount(FC)", "VATFC"],
-    "dtype": "numeric",
-    "use": true
+    "dtype": "numeric"
   },
   "sales_amount_tax": {
     "raw_name": ["Sales Amount", "AMT"],
-    "dtype": "numeric",
-    "use": true
+    "dtype": "numeric"
   },
   "sales_amount_fc_tax": {
     "raw_name": ["Sales Amount(FC)", "AMTFC"],
-    "dtype": "numeric",
-    "use": true
+    "dtype": "numeric"
   },
   "return_quantity": {
     "raw_name": ["Return Qty.", "RQTY"],
-    "dtype": "numeric",
-    "use": true
-  },
-
-  "location": {
-    "raw_name": ["Location", "LOCATION"],
-    "dtype": "string",
-    "use": false
-  },
-  "business_place": {
-    "raw_name": ["Business Place", "BPLNAME"],
-    "dtype": "string",
-    "use": false
-  },
-  "sales_group": {
-    "raw_name": ["Sales Group", "SALESGRPTP"],
-    "dtype": "string",
-    "use": false
-  },
-  "item_group": {
-    "raw_name": ["Item Group", "ITMSGRPCOD"],
-    "dtype": "string",
-    "use": false
-  },
-  "discount_type": {
-    "raw_name": ["DISCOUNTTP", "Discount Type"],
-    "dtype": "string",
-    "use": false
-  },
-  "order_type": {
-    "raw_name": ["Order Type", "U_SDTP"],
-    "dtype": "string",
-    "use": false
-  },
-  "sales_type": {
-    "raw_name": ["Sales Type", "U_ARTP"],
-    "dtype": "string",
-    "use": false
-  },
-  "return_type": {
-    "raw_name": ["Returns Type", "U_DLNTP"],
-    "dtype": "string",
-    "use": false
-  },
-  "currency": {
-    "raw_name": ["Currency", "CURRENCY"],
-    "dtype": "string",
-    "use": false
-  },
-  "line_status": {
-    "raw_name": ["Line status", "LINESTATUS"],
-    "dtype": "string",
-    "use": false
-  },
-  "item_separate": {
-    "raw_name": ["Item Separate", "STYPE"],
-    "dtype": "string",
-    "use": false
-  },
-  "dept_name": {
-    "raw_name": ["Business Dept", "UBRANCH"],
-    "dtype": "string",
-    "use": false
-  },
-  "territory": {
-    "raw_name": ["Territory", "TERRITORY"],
-    "dtype": "string",
-    "use": false
-  },
-  "division": {
-    "raw_name": ["Division", "DIVISION"],
-    "dtype": "string",
-    "use": false
-  },
-  "exchange_rate": {
-    "raw_name": ["Exchange Rate", "RATE"],
-    "dtype": "numeric",
-    "use": false
-  },
-  "contact_person": {
-    "raw_name": ["Contact Person", "CONPER"],
-    "dtype": "string",
-    "use": false
-  },
-  "customer_ref_no": {
-    "raw_name": ["Customer Ref. No.", "CREFNO"],
-    "dtype": "string",
-    "use": false
-  },
-  "remark": {
-    "raw_name": ["Remark", "COMMENTS"],
-    "dtype": "string",
-    "use": false
-  },
-  "etd_date": {
-    "raw_name": ["ETD (Date)", "ETDDT"],
-    "dtype": "date",
-    "use": false
-  },
-  "eta_date": {
-    "raw_name": ["ETA ( Date)", "ETADT"],
-    "dtype": "date",
-    "use": false
-  },
-  "contract_no": {
-    "raw_name": ["Contract No", "CONTNO"],
-    "dtype": "string",
-    "use": false
-  },
-  "contract_date": {
-    "raw_name": ["Contract Date", "CONTDT"],
-    "dtype": "date",
-    "use": false
-  },
-  "b/l_date": {
-    "raw_name": ["B/L Date", "BLDT"],
-    "dtype": "date",
-    "use": false
-  },
-  "b/l_number": {
-    "raw_name": ["B/L Number", "BLNO"],
-    "dtype": "string",
-    "use": false
-  },
-  "doc_type": { "raw_name": ["DOCTYPE"], "dtype": "string", "use": false },
-  "weight_unit": { "raw_name": ["-"], "dtype": "string", "use": false }
+    "dtype": "numeric"
+  }
 }

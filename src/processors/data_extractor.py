@@ -3,7 +3,7 @@ import pandas as pd
 from pathlib import Path
 
 
-class SalesDataExtractor():
+class SalesDataExtractor:
     """
     Hàm này chịu trách nhiệm đọc và lấy dữ liệu từ các một list các path
     """
@@ -15,9 +15,9 @@ class SalesDataExtractor():
         self.col_req_dict = {} # Lưu trữ từ điển các cột / tên cột gốc để so sánh với file thô
         self.col_use = None # Lưu trữ các cột bắt buộc
 
-        self.config_loadder()
+        self.config_loader()
         
-    def config_loadder(self):
+    def config_loader(self):
         """
         Đọc file config và trích xuất thông tin cần thiết
         """
@@ -26,9 +26,9 @@ class SalesDataExtractor():
             config_data = json.load(config_file)
         
         # Dict dùng để phát hiện cột chưa được map trong file dữ liệu thô
-        for col_name, dict in config_data.items():
-            if dict["use"]:
-                self.col_req_dict[col_name] = dict["raw_name"]
+        for col_name, dict_data in config_data.items():
+            if dict_data["use"]:
+                self.col_req_dict[col_name] = dict_data["raw_name"]
             
         # Danh sách cột bắt buộc phải có (chỉ sử dụng các cột này)
         self.col_use = {
@@ -37,8 +37,8 @@ class SalesDataExtractor():
         }
 
         # Từ điển đổi tên cột
-        for col_name, dict in config_data.items():
-            for col_raw_name in dict["raw_name"]:
+        for col_name, dict_data in config_data.items():
+            for col_raw_name in dict_data["raw_name"]:
                 self.rename_dict[col_raw_name]=col_name
 
         # Từ điển đổi dtype
@@ -67,37 +67,46 @@ class SalesDataExtractor():
 
                         for col_name, raw_col_name_list in self.col_req_dict.items():
                             if not any(col in raw_col_name_list for col in raw_col_list): # Trường hợp không tìm thấy cột nào được map với tên cột trong file gốc
-                                not_mapped_info = {}
-                                not_mapped_info[col_name] = file.stem
+                                not_mapped_info = {col_name: file.stem}
                                 not_mapped_columns.append(not_mapped_info)
                                 has_missing_col = True
-                        
+
+                        print(not_mapped_columns)
+
                         if has_missing_col:
                             has_error = True
                             continue
 
                         print("Đã map đủ tất cả các cột bắt buộc!")
-                        df = pd.read_excel(
-                            file, 
+                        df: pd.DataFrame = pd.read_excel(
+                            file,
                             usecols=[col for col in self.col_use if col in raw_col_list], 
                             dtype="string", 
                             engine="openpyxl"
                         )
 
-                        # Chuyển định dạng các cột số
-                        df_numeric_dtype = df.astype()
-                                                
+                        # Đổi tên cột
+                        df = df.rename(columns=self.rename_dict)
+
+                        # Chuyển định dạng
+                        for col, dtype in self.dtype_dict.items():
+                            if dtype == "numeric":
+                                df[col] = pd.to_numeric(df[col], errors="coerce")
+
+                            if dtype == "date":
+                                df[col] = pd.to_datetime(df[col], errors="coerce", format="%d.%m.%Y")
+
                         if not df.empty:
                             completed_dfs.append(df)
+                            print(completed_dfs)
                     except Exception as e:
                         print(e)
         
             if len(completed_dfs) == 0: 
                 print("Không có kết quả")
-                return
+                return None
             
-            result = pd.concat(completed_dfs)
-
+        result = pd.concat(completed_dfs)
         return result, has_error
 
     def write_excel(self):
