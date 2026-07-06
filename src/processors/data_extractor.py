@@ -9,10 +9,11 @@ class SalesDataExtractor:
     """
 
     def __init__(self, paths: list):
-        self.selected_file = paths # Lưu trữ đường dẫn
+        self.selected_file = [Path(path) for path in paths] # Lưu trữ đường dẫn
         self.rename_dict = {} # Lưu trữ từ điển đổi tên cột
         self.dtype_dict = None # Lưu trữ từ điển đổi dtype
         self.col_req_dict = {} # Lưu trữ từ điển các cột / tên cột gốc để so sánh với file thô
+        self.col_exclusive_dict = None # Lưu trữ các tên cột
         self.col_use = None # Lưu trữ các cột bắt buộc
 
         self.config_loader()
@@ -23,26 +24,35 @@ class SalesDataExtractor:
         """
         
         with open('configs/sales_data_config.json') as config_file:
-            config_data = json.load(config_file)
+            config_data: dict = json.load(config_file)
         
         # Dict dùng để phát hiện cột chưa được map trong file dữ liệu thô
-        for col_name, dict_data in config_data.items():
-            if dict_data["use"]:
-                self.col_req_dict[col_name] = dict_data["raw_name"]
+        self.col_req_dict = {
+            col_name: data["raw_name"]
+            for col_name, data in config_data.items()
+        }
+
+        # Dict dùng để bỏ qua các cột chỉ nằm ở một loại file
+        self.col_exclusive_dict = {
+            col_name: data["exclusive"]
+            for col_name, data in config_data.items() if data.get("exclusive")
+        }
             
-        # Danh sách cột bắt buộc phải có (chỉ sử dụng các cột này)
+        # Dict chứa cột bắt buộc phải có (chỉ sử dụng các cột này)
         self.col_use = {
             col for dict_data in config_data.values() 
-            for col in dict_data["raw_name"] if dict_data["use"]
+            for col in dict_data["raw_name"]
         }
 
         # Từ điển đổi tên cột
-        for col_name, dict_data in config_data.items():
-            for col_raw_name in dict_data["raw_name"]:
-                self.rename_dict[col_raw_name]=col_name
+        self.rename_dict = {
+            raw_name: new_col_name 
+            for new_col_name, data in config_data.items()
+            for raw_name in data["raw_name"] 
+        }
 
         # Từ điển đổi dtype
-        self.dtype_dict = {col: dict_data["dtype"] for col, dict_data in config_data.items() if dict_data["use"] }
+        self.dtype_dict = {col: dict_data["dtype"] for col, dict_data in config_data.items()}
         
     def read_excel(self):
         """
@@ -56,23 +66,31 @@ class SalesDataExtractor:
         if self.selected_file:
             for file in self.selected_file:
                 # Đọc file
-                print(f"Đang đọc file: {file.stem}")
+                file_name = file.stem
                 suffix = Path(file).suffix
+
+                file_type = self.check_file_type(file_name)
                 
                 # Đọc file excel
-                if suffix == ".xlsx":
+                if suffix == ".xlsx" and file_type:
                     try:
                         has_missing_col = False # Đánh dấu file có thiếu cột không
-                        raw_col_list = pd.read_excel(file, nrows=0) # Lấy tên cột có trong file gốc
+                        raw_col_list = pd.read_excel(file, nrows=0).columns.tolist() # Lấy tên cột có trong file gốc
 
                         for col_name, raw_col_name_list in self.col_req_dict.items():
-                            if not any(col in raw_col_name_list for col in raw_col_list): # Trường hợp không tìm thấy cột nào được map với tên cột trong file gốc
+                            # Trường hợp thiếu cột không nằm trong loại file order / ar_invoice
+                            col_exclusive_compare = self.col_exclusive_dict.get(col_name)
+                            if col_exclusive_compare and col_exclusive_compare != file_type:
+                                continue 
+                            
+                            # Trường hợp không tìm thấy cột nào được map với tên cột trong file gốc
+                            if not any(col in raw_col_name_list for col in raw_col_list): 
                                 not_mapped_info = {col_name: file.stem}
                                 not_mapped_columns.append(not_mapped_info)
                                 has_missing_col = True
 
                         print(not_mapped_columns)
-
+                                
                         if has_missing_col:
                             has_error = True
                             continue
@@ -88,13 +106,17 @@ class SalesDataExtractor:
                         # Đổi tên cột
                         df = df.rename(columns=self.rename_dict)
 
+                        # Drop dòng trống
+                        df = df.dropna(subset=['business_partner_code'])
+
                         # Chuyển định dạng
                         for col, dtype in self.dtype_dict.items():
-                            if dtype == "numeric":
-                                df[col] = pd.to_numeric(df[col], errors="coerce")
+                            if col in df.columns:
+                                if dtype == "numeric":
+                                    df[col] = pd.to_numeric(df[col], errors="coerce")
 
-                            if dtype == "date":
-                                df[col] = pd.to_datetime(df[col], errors="coerce", format="%d.%m.%Y")
+                                if dtype == "date":
+                                    df[col] = pd.to_datetime(df[col], errors="coerce", format="%d.%m.%Y")
 
                         if not df.empty:
                             completed_dfs.append(df)
@@ -104,10 +126,20 @@ class SalesDataExtractor:
         
             if len(completed_dfs) == 0: 
                 print("Không có kết quả")
-                return None
+                return None, has_error
             
-        result = pd.concat(completed_dfs)
+        result = pd.concat(completed_dfs, ignore_index=True)
         return result, has_error
+    
+    def check_file_type(self, file_name):
+        file_name_lower = file_name.lower()
+        # Value của dict này cần quy định chính xác với value trong configs/sales_data_config.json
+        dict_data= {
+            "ar_invoice": ["ar", "invoice"],
+            "order": ["order", "or"] 
+        }
 
-    def write_excel(self):
-        pass
+        for file_type, kw_list in dict_data.items():
+            if any(kw in file_name_lower for kw in kw_list):
+                return file_type
+        return None

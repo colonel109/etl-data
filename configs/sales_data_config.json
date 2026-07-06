@@ -45,19 +45,18 @@
   },
   "demand_date": {
     "raw_name": ["Demand Date"],
-    "dtype": "date"
+    "dtype": "date",
+    "exclusive": "order"
   },
   "final_delivery_date": {
     "raw_name": ["Final delivery date"],
-    "dtype": "date"
-  },
-  "invoice_date": {
-    "raw_name": ["Invoice Date", "INVDT"],
-    "dtype": "date"
+    "dtype": "date",
+    "exclusive": "order"
   },
   "document_type_name": {
     "raw_name": ["Document Type", "OBJTYPE"],
-    "dtype": "string"
+    "dtype": "string",
+    "exclusive": "ar_invoice"
   },
   "sell_type_name": {
     "raw_name": ["Selling Type", "Sell Type", "SALETYPE"],
@@ -89,27 +88,23 @@
   },
   "warehouse_code": {
     "raw_name": ["Warehouse", "WHSCODE"],
-    "dtype": "string"
+    "dtype": "string",
+    "exclusive": "ar_invoice"
   },
   "warehouse_name": {
     "raw_name": ["Warehouse Name", "WHSNAME"],
-    "dtype": "string"
+    "dtype": "string",
+    "exclusive": "ar_invoice"
   },
   "return_type_code": {
     "raw_name": ["RETURN TYPE CODE", "RTNTPCD"],
-    "dtype": "string"
+    "dtype": "string",
+    "exclusive":"ar_invoice"
   },
   "return_type_name": {
     "raw_name": ["RETURN TYPE NAME", "RTNTPNM"],
-    "dtype": "string"
-  },
-  "account_code": {
-    "raw_name": ["계정코드", "ACCTCD"],
-    "dtype": "string"
-  },
-  "account_name": {
-    "raw_name": ["Account Name", "ACCTNM"],
-    "dtype": "string"
+    "dtype": "string",
+    "exclusive":"ar_invoice"
   },
   "sales_uom_name": {
     "raw_name": ["Sales UOM", "UNITMSR"],
@@ -119,17 +114,15 @@
     "raw_name": ["Document No", "DOCENTRY"],
     "dtype": "string"
   },
-  "invoice_no": {
-    "raw_name": ["Invoice No", "INVNO"],
-    "dtype": "string"
-  },
   "tax_code": {
     "raw_name": ["Tax Code", "TAXCD"],
-    "dtype": "string"
+    "dtype": "string",
+    "exclusive":"ar_invoice"
   },
   "tax_number": {
     "raw_name": ["Tax Number", "TAXNO"],
-    "dtype": "string"
+    "dtype": "string",
+    "exclusive":"ar_invoice"
   },
   "weight": {
     "raw_name": ["Weight", "WEIGHT"],
@@ -173,7 +166,8 @@
   },
   "discounted_price_tax": {
     "raw_name": ["Unit price", "Gross Price"],
-    "dtype": "numeric"
+    "dtype": "numeric",
+    "exclusive": "ar_invoice"
   },
   "sales_revenue": {
     "raw_name": ["Total", "LINETOTAL"],
@@ -201,6 +195,7 @@
   },
   "return_quantity": {
     "raw_name": ["Return Qty.", "RQTY"],
-    "dtype": "numeric"
+    "dtype": "numeric",
+    "exclusive": "ar_invoice"
   }
 }
