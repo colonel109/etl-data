@@ -189,5 +189,9 @@
     "raw_name": ["Return Qty.", "RQTY"],
     "dtype": "numeric",
     "exclusive": "ar_invoice"
+  },
+  "remark": {
+    "raw_name": ["Remark"],
+    "dtype": "string"
   }
 }

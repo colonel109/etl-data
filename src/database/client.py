@@ -8,11 +8,8 @@ class DatabaseClient:
         self.engine = create_engine("postgresql+psycopg://postgres:duong1234@localhost:5432/daesang_db_test")
     
     def create_table(self):
-        Base.metadata.create_all(
-            bind=self.engine, 
-            tables=[TransactionsStaging.__table__]
-        )
-        
+        Base.metadata.create_all(self.engine)
+
     def insert_dataframe(self, df: pd.DataFrame, table_name: str, schema: str, chunksize: int = 10000):
         if df.empty:
             return
