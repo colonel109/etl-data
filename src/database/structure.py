@@ -181,7 +181,7 @@ class Warehouse(Base):
 
 class BusinessPartnerGroup(Base):
     __tablename__ = "business_partner_group"
-    __table_args__ = {"schema": "sales"}
+    __table_args__ = {"schema": "main"}
 
     bp_group_key: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     bp_group_code: Mapped[str] = mapped_column(String(50), unique=True)
@@ -190,7 +190,7 @@ class BusinessPartnerGroup(Base):
 
 class DocumentType(Base):
     __tablename__ = "document_type"
-    __table_args__ = {"schema": "sales"}
+    __table_args__ = {"schema": "main"}
 
     document_type_key: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     document_type_code: Mapped[str] = mapped_column(String(50), unique=True)
@@ -199,7 +199,7 @@ class DocumentType(Base):
 
 class SellType(Base):
     __tablename__ = "sell_type"
-    __table_args__ = {"schema": "sales"}
+    __table_args__ = {"schema": "main"}
 
     sell_type_key: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     sell_type_code: Mapped[str] = mapped_column(String(50), unique=True)
@@ -208,7 +208,7 @@ class SellType(Base):
 
 class CostCenter(Base):
     __tablename__ = "cost_center"
-    __table_args__ = {"schema": "sales"}
+    __table_args__ = {"schema": "main"}
 
     cost_center_key: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     cost_center_code: Mapped[str] = mapped_column(String(50), unique=True)
@@ -217,7 +217,7 @@ class CostCenter(Base):
 
 class ProfitCenter(Base):
     __tablename__ = "profit_center"
-    __table_args__ = {"schema": "sales"}
+    __table_args__ = {"schema": "main"}
 
     profit_center_key: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     profit_center_code: Mapped[str] = mapped_column(String(50), unique=True)
@@ -226,7 +226,7 @@ class ProfitCenter(Base):
 
 class ReturnType(Base):
     __tablename__ = "return_type"
-    __table_args__ = {"schema": "sales"}
+    __table_args__ = {"schema": "main"}
 
     return_type_key: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     return_type_code: Mapped[str] = mapped_column(String(50), unique=True)
@@ -235,7 +235,7 @@ class ReturnType(Base):
 
 class Uom(Base):
     __tablename__ = "uom"
-    __table_args__ = {"schema": "sales"}
+    __table_args__ = {"schema": "main"}
 
     uom_key: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     uom_code: Mapped[str] = mapped_column(String(50), unique=True)
@@ -253,19 +253,19 @@ class Transactions(Base):
         server_default="NOW()"
     )
     
-    business_partner_key: Mapped[Optional[int]] = mapped_column(ForeignKey("sales.business_partner.business_partner_key"))
+    business_partner_key: Mapped[Optional[int]] = mapped_column(ForeignKey("main.business_partner.business_partner_key"))
     team_key: Mapped[Optional[int]] = mapped_column(ForeignKey("main.team.team_key"))
     branch_key: Mapped[Optional[int]] = mapped_column(ForeignKey("main.branch.branch_key"))
-    bp_group_key: Mapped[Optional[int]] = mapped_column(ForeignKey("sales.business_partner_group.bp_group_key"))
-    product_key: Mapped[Optional[int]] = mapped_column(ForeignKey("sales.product.product_key"))
-    source_product_key: Mapped[Optional[int]] = mapped_column(ForeignKey("sales.product.product_key"))
-    document_type_key: Mapped[Optional[int]] = mapped_column(ForeignKey("sales.document_type.document_type_key"))
-    sell_type_key: Mapped[Optional[int]] = mapped_column(ForeignKey("sales.sell_type.sell_type_key"))
-    cost_center_key: Mapped[Optional[int]] = mapped_column(ForeignKey("sales.cost_center.cost_center_key"))
-    profit_center_key: Mapped[Optional[int]] = mapped_column(ForeignKey("sales.profit_center.profit_center_key"))
-    warehouse_key: Mapped[Optional[int]] = mapped_column(ForeignKey("sales.warehouse.warehouse_key"))
-    return_type_key: Mapped[Optional[int]] = mapped_column(ForeignKey("sales.return_type.return_type_key"))
-    uom_key: Mapped[Optional[int]] = mapped_column(ForeignKey("sales.uom.uom_key"))
+    bp_group_key: Mapped[Optional[int]] = mapped_column(ForeignKey("main.business_partner_group.bp_group_key"))
+    product_key: Mapped[Optional[int]] = mapped_column(ForeignKey("main.product.product_key"))
+    source_product_key: Mapped[Optional[int]] = mapped_column(ForeignKey("main.product.product_key"))
+    document_type_key: Mapped[Optional[int]] = mapped_column(ForeignKey("main.document_type.document_type_key"))
+    sell_type_key: Mapped[Optional[int]] = mapped_column(ForeignKey("main.sell_type.sell_type_key"))
+    cost_center_key: Mapped[Optional[int]] = mapped_column(ForeignKey("main.cost_center.cost_center_key"))
+    profit_center_key: Mapped[Optional[int]] = mapped_column(ForeignKey("main.profit_center.profit_center_key"))
+    warehouse_key: Mapped[Optional[int]] = mapped_column(ForeignKey("main.warehouse.warehouse_key"))
+    return_type_key: Mapped[Optional[int]] = mapped_column(ForeignKey("main.return_type.return_type_key"))
+    uom_key: Mapped[Optional[int]] = mapped_column(ForeignKey("main.uom.uom_key"))
     
     document_no: Mapped[Optional[str]] = mapped_column(String(50))
     tax_code: Mapped[Optional[str]] = mapped_column(String(50))
@@ -286,11 +286,11 @@ class Transactions(Base):
     discount_percent: Mapped[Optional[float]] = mapped_column(Numeric(15, 2))
     discounted_price: Mapped[Optional[float]] = mapped_column(Numeric(15, 4))
     discounted_price_tax: Mapped[Optional[float]] = mapped_column(Numeric(15, 4))
-    main_revenue: Mapped[Optional[float]] = mapped_column(Numeric(15, 4))
+    revenue: Mapped[Optional[float]] = mapped_column(Numeric(15, 4))
     main_amount_fc: Mapped[Optional[float]] = mapped_column(Numeric(15, 4))
-    tax_amount: Mapped[Optional[float]] = mapped_column(Numeric(15, 4))
+    amount: Mapped[Optional[float]] = mapped_column(Numeric(15, 4))
     tax_amount_fc: Mapped[Optional[float]] = mapped_column(Numeric(15, 4))
-    main_amount_tax: Mapped[Optional[float]] = mapped_column(Numeric(15, 4))
-    main_amount_fc_tax: Mapped[Optional[float]] = mapped_column(Numeric(15, 4))
+    amount_tax: Mapped[Optional[float]] = mapped_column(Numeric(15, 4))
+    amount_fc_tax: Mapped[Optional[float]] = mapped_column(Numeric(15, 4))
     return_quantity: Mapped[Optional[float]] = mapped_column(Numeric(15, 4))
     remark: Mapped[Optional[str]] = mapped_column(String(255))
