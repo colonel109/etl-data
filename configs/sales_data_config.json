@@ -62,14 +62,6 @@
     "raw_name": ["Selling Type", "Sell Type", "SALETYPE"],
     "dtype": "string"
   },
-  "cost_account_code": {
-    "raw_name": ["Sales Cost account", "Sales Cost Account", "COGACCT"],
-    "dtype": "string"
-  },
-  "cost_account_name": {
-    "raw_name": ["Sales Cost account Name", "COGACCTNAME"],
-    "dtype": "string"
-  },
   "cost_center_code": {
     "raw_name": ["Cost Center", "COSTCD"],
     "dtype": "string"

@@ -88,8 +88,6 @@ class SalesDataExtractor:
                                 not_mapped_info = {col_name: file.stem}
                                 not_mapped_columns.append(not_mapped_info)
                                 has_missing_col = True
-
-                        print(not_mapped_columns)
                                 
                         if has_missing_col:
                             has_error = True
@@ -120,7 +118,6 @@ class SalesDataExtractor:
 
                         if not df.empty:
                             completed_dfs.append(df)
-                            print(completed_dfs)
                     except Exception as e:
                         print(e)
         
