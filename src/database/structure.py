@@ -87,6 +87,16 @@ class UomStaging(Base):
         ForeignKey("main.uom.uom_key", ondelete="CASCADE")
     )
 
+class TaxStaging(Base):
+    __tablename__ = "tax_staging"
+    __table_args__ = {"schema": "staging"}
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    raw_value: Mapped[str] = mapped_column(String, unique=True)
+    tax_key: Mapped[int] = mapped_column(
+        ForeignKey("main.tax.tax_key", ondelete="CASCADE")
+    )
+
 
 class TransactionsStaging(Base):
     __tablename__ = "transactions"
@@ -414,7 +424,15 @@ class Uom(Base):
     __table_args__ = {"schema": "main"}
 
     uom_key: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    uom_name: Mapped[Optional[str]] = mapped_column(String, unique=True)
+    uom_name: Mapped[str] = mapped_column(String, unique=True)
+
+
+class Tax(Base):
+    __tablename__ = "tax"
+    __table_args__ = {"schema": "main"}
+
+    tax_key: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    tax_code: Mapped[str] = mapped_column(String, unique=True)
 
 
 class Transactions(Base):

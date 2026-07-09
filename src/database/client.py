@@ -42,6 +42,7 @@ class DatabaseClient:
                 INSERT INTO main.msg_group VALUES (0, 'NA', 0) ON CONFLICT DO NOTHING;
                 INSERT INTO main.ducviet_category_group VALUES (0, 'NA') ON CONFLICT DO NOTHING;
                 INSERT INTO main.product VALUES (0, 'NA', 'NA', 'NA', 0, 0, 0, 0) ON CONFLICT DO NOTHING;
+                INSERT INTO main.tax VALUES (0, 'NA') ON CONFLICT DO NOTHING;
             """)
             conn.execute(setup_sql)
 
@@ -206,9 +207,8 @@ class DatabaseClient:
                 INSERT INTO main.uom(uom_name)
                 SELECT sales_uom_name FROM temp_schema.sales_uom;
 
-
-                SELECT * FROM temp_schema.product p;
-
+                INSERT INTO main.tax(tax_code)
+                SELECT tax_code FROM temp_schema.tax_code;
 
                 INSERT INTO main.product (product_code, product_name, product_name_eng, product_category_key, market_key, msg_group_key, ducviet_category_key)
                 WITH data_temp AS (
