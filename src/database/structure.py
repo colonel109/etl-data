@@ -259,12 +259,6 @@ class BusinessPartner(Base):
     business_partner_key: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     business_partner_code: Mapped[str] = mapped_column(Text) 
     business_partner_name: Mapped[Optional[str]] = mapped_column(String)
-
-    creation_date: Mapped[Optional[datetime.date]] = mapped_column(Date)
-    
-    import_date: Mapped[datetime.date] = mapped_column(
-        Date, server_default=func.current_date()
-    )
     bp_group_key: Mapped[int] = mapped_column(
         ForeignKey("main.business_partner_group.bp_group_key", ondelete="RESTRICT")
     )
@@ -274,7 +268,10 @@ class BusinessPartner(Base):
     province_key: Mapped[int] = mapped_column(
         ForeignKey("main.province.province_key", ondelete="RESTRICT")
     )
-    temporary_bp_key: Mapped[bool] = mapped_column(Boolean, server_default="false")
+    creation_date: Mapped[Optional[datetime.date]] = mapped_column(Date)
+    import_date: Mapped[datetime.date] = mapped_column(
+        Date, server_default=func.current_date()
+    )
     valid_from: Mapped[datetime.date] = mapped_column(
         Date, server_default=func.date_trunc("month", func.now())
     )
