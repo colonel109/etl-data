@@ -117,6 +117,8 @@ class SalesDataExtractor:
                                     df[col] = pd.to_datetime(df[col], errors="coerce", format="%d.%m.%Y")
 
                         if not df.empty:
+                            df["source_file"] = file_name
+                            df["scenario"] = file_type
                             completed_dfs.append(df)
                     except Exception as e:
                         print(e)

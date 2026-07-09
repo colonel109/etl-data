@@ -7,6 +7,10 @@
     "raw_name": ["BP Name"],
     "dtype": "string"
   },
+  "province_name": {
+    "raw_name": ["Territory"],
+    "dtype": "string"
+  },
   "team_name": {
     "raw_name": ["Team", "TEAM1"],
     "dtype": "string"
@@ -98,7 +102,7 @@
     "dtype": "string",
     "exclusive":"ar_invoice"
   },
-  "sales_uom_name": {
+  "uom_name": {
     "raw_name": ["Sales UOM", "UNITMSR"],
     "dtype": "string"
   },
