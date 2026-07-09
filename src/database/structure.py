@@ -10,6 +10,84 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 class Base(DeclarativeBase):
     pass
 
+
+class sell_type_staging(Base):
+    __tablename__ = "sell_type_staging"
+    __table_args__ = {"schema": "staging"}
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    raw_value: Mapped[str] = mapped_column(String, unique=True)
+    sell_type_key: Mapped[int] = mapped_column(
+        ForeignKey("main.sell_type.sell_type_key")
+    )
+
+
+class DocumentTypeStaging(Base):
+    __tablename__ = "document_type_staging"
+    __table_args__ = {"schema": "staging"}
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    raw_value: Mapped[str] = mapped_column(String, unique=True)
+    document_type_key: Mapped[int] = mapped_column(
+        ForeignKey("main.document_type.document_type_key", ondelete="CASCADE")
+    )
+
+
+class CostCenterStaging(Base):
+    __tablename__ = "cost_center_staging"
+    __table_args__ = {"schema": "staging"}
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    raw_value: Mapped[str] = mapped_column(String, unique=True)
+    cost_center_key: Mapped[int] = mapped_column(
+        ForeignKey("main.cost_center.cost_center_key", ondelete="CASCADE")
+    )
+
+
+class ProfitCenterStaging(Base):
+    __tablename__ = "profit_center_staging"
+    __table_args__ = {"schema": "staging"}
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    raw_value: Mapped[str] = mapped_column(String, unique=True)
+    profit_center_key: Mapped[int] = mapped_column(
+        ForeignKey("main.profit_center.profit_center_key", ondelete="CASCADE")
+    )
+
+
+class WarehouseStaging(Base):
+    __tablename__ = "warehouse_staging"
+    __table_args__ = {"schema": "staging"}
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    raw_value: Mapped[str] = mapped_column(String, unique=True)
+    warehouse_key: Mapped[int] = mapped_column(
+        ForeignKey("main.warehouse.warehouse_key", ondelete="CASCADE")
+    )
+
+
+class ReturnTypeStaging(Base):
+    __tablename__ = "return_type_staging"
+    __table_args__ = {"schema": "staging"}
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    raw_value: Mapped[str] = mapped_column(String, unique=True)
+    return_type_key: Mapped[int] = mapped_column(
+        ForeignKey("main.return_type.return_type_key", ondelete="CASCADE")
+    )
+
+
+class UomStaging(Base):
+    __tablename__ = "uom_staging"
+    __table_args__ = {"schema": "staging"}
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    raw_value: Mapped[str] = mapped_column(String, unique=True)
+    uom_key: Mapped[int] = mapped_column(
+        ForeignKey("main.uom.uom_key", ondelete="CASCADE")
+    )
+
+
 class TransactionsStaging(Base):
     __tablename__ = "transactions"
     __table_args__ = {"schema": "staging"}
@@ -116,6 +194,7 @@ class Team(Base):
     branch: Mapped["Branch"] = relationship(back_populates="teams")
     dept: Mapped[Optional["Dept"]] = relationship(back_populates="teams")
 
+    business_partners: Mapped[List["BusinessPartner"]] = relationship(back_populates="team")
 
 class KpiGroup(Base):
     __tablename__ = "kpi_group"
@@ -223,7 +302,8 @@ class Province(Base):
     province_key: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     province_name_old: Mapped[str] = mapped_column(String, unique=True)
     province_name_new: Mapped[str] = mapped_column(String)
-
+    
+    business_partners: Mapped[List["BusinessPartner"]] = relationship(back_populates="province")
 
 class BusinessPartnerType(Base):
     __tablename__ = "business_partner_type"
