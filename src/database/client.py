@@ -31,14 +31,16 @@ class DatabaseClient:
                 INSERT INTO main.kpi_group VALUES (0, 'NA', 'NA', 'NA', 'NA') ON CONFLICT DO NOTHING;
                 INSERT INTO main.product_category VALUES (0, 'NA', '0') ON CONFLICT DO NOTHING;
                 INSERT INTO main.market VALUES (0, 'NA', 'NA', 'NA', 'NA') ON CONFLICT DO NOTHING;
-                INSERT INTO main.document_type VALUES (0, 'NA', 'NA') ON CONFLICT DO NOTHING;
-                INSERT INTO main.sell_type VALUES (0, 'NA', 'NA') ON CONFLICT DO NOTHING;
-                INSERT INTO main.uom VALUES (0, 'NA', 'NA') ON CONFLICT DO NOTHING;
+                INSERT INTO main.document_type VALUES (0, 'NA') ON CONFLICT DO NOTHING;
+                INSERT INTO main.sell_type VALUES (0, 'NA') ON CONFLICT DO NOTHING;
+                INSERT INTO main.uom VALUES (0, 'NA') ON CONFLICT DO NOTHING;
                 INSERT INTO main.warehouse VALUES (0, 'NA', 'NA') ON CONFLICT DO NOTHING;
                 INSERT INTO main.province VALUES (0, 'NA', 'NA') ON CONFLICT DO NOTHING;
                 INSERT INTO main.return_type VALUES (0, 'NA', 'NA') ON CONFLICT DO NOTHING;
                 INSERT INTO main.business_partner_type VALUES (0, 'NA') ON CONFLICT DO NOTHING;
                 INSERT INTO main.business_partner_group VALUES (0, 'NA', 0) ON CONFLICT DO NOTHING;
+                INSERT INTO main.msg_group VALUES (0, 'NA', 0) ON CONFLICT DO NOTHING;
+                INSERT INTO main.ducviet_category_group VALUES (0, 'NA') ON CONFLICT DO NOTHING;
             """)
             conn.execute(setup_sql)
 
