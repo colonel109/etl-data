@@ -4,8 +4,8 @@ from src.database.structure import Base, TransactionsStaging
 
 
 class DatabaseClient:
-    def __init__(self):
-        self.engine = create_engine("postgresql+psycopg://postgres:duong1234@localhost:5432/daesang_db_test")
+    def __init__(self, engine):
+        self.engine = engine 
     
     def create_table(self):
         with self.engine.begin() as conn:
