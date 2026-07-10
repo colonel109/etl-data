@@ -1,6 +1,6 @@
 from pathlib import Path
 from sqlalchemy import create_engine 
-from src.processors.data_extractor import SalesDataExtractor
+from src.data_extractor import SalesDataExtractor
 from src.database.client import DatabaseClient
 
 file_paths = [file for file in Path("data/sales/daily").glob("*")]
