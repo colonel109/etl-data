@@ -72,6 +72,7 @@ class SalesDataExtractor:
                 file_type = self.check_file_type(file_name)
                 
                 # Đọc file excel
+                print(f"Đang xử lí file {file_name}")
                 if suffix == ".xlsx" and file_type:
                     try:
                         has_missing_col = False # Đánh dấu file có thiếu cột không
@@ -88,6 +89,8 @@ class SalesDataExtractor:
                                 not_mapped_info = {col_name: file.stem}
                                 not_mapped_columns.append(not_mapped_info)
                                 has_missing_col = True
+                        
+                        print(not_mapped_columns)
                                 
                         if has_missing_col:
                             has_error = True

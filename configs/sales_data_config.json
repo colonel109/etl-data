@@ -8,7 +8,7 @@
     "dtype": "string"
   },
   "province_name": {
-    "raw_name": ["Territory"],
+    "raw_name": ["Territory", "TERRITORY"],
     "dtype": "string"
   },
   "team_name": {
@@ -195,7 +195,7 @@
     "exclusive": "ar_invoice"
   },
   "remark": {
-    "raw_name": ["Remark"],
+    "raw_name": ["Remark", "COMMENTS"],
     "dtype": "string"
   }
 }

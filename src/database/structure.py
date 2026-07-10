@@ -103,7 +103,7 @@ class TransactionsStaging(Base):
     __table_args__ = {"schema": "staging"}
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    imported_date: Mapped[datetime.datetime] = mapped_column(
+    import_date: Mapped[datetime.datetime] = mapped_column(
         DateTime, server_default=func.now()
     )
 
@@ -128,8 +128,8 @@ class TransactionsStaging(Base):
     return_type_code: Mapped[Optional[str]] = mapped_column(String)
     return_type_name: Mapped[Optional[str]] = mapped_column(String)
     uom_name: Mapped[Optional[str]] = mapped_column(String)
-    document_no: Mapped[Optional[str]] = mapped_column(String)
     tax_code: Mapped[Optional[str]] = mapped_column(String)
+    document_no: Mapped[Optional[str]] = mapped_column(String)
     tax_number: Mapped[Optional[str]] = mapped_column(String)
 
     posting_date: Mapped[Optional[datetime.date]] = mapped_column(Date)
@@ -440,11 +440,10 @@ class Transactions(Base):
     __table_args__ = {"schema": "main"}
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    
     import_date: Mapped[datetime.datetime] = mapped_column(
         DateTime, server_default=func.now()
     )
-   
+
     business_partner_key: Mapped[int] = mapped_column(
         ForeignKey("main.business_partner.business_partner_key", ondelete="RESTRICT")
     )
@@ -475,9 +474,11 @@ class Transactions(Base):
     uom_key: Mapped[int] = mapped_column(
         ForeignKey("main.uom.uom_key", ondelete="RESTRICT")
     )
+    tax_key: Mapped[int] = mapped_column(
+        ForeignKey("main.tax.tax_key", ondelete="RESTRICT")
+    )
 
     document_no: Mapped[Optional[str]] = mapped_column(String)
-    tax_code: Mapped[Optional[str]] = mapped_column(String)
     tax_number: Mapped[Optional[str]] = mapped_column(String)
     
     posting_date: Mapped[Optional[datetime.date]] = mapped_column(Date)
@@ -495,19 +496,17 @@ class Transactions(Base):
     discount_percent: Mapped[Optional[Decimal]] = mapped_column(Numeric(18, 4))
     discounted_price: Mapped[Optional[Decimal]] = mapped_column(Numeric(18, 4))
     discounted_price_tax: Mapped[Optional[Decimal]] = mapped_column(Numeric(18, 4))
-    revenue: Mapped[Optional[Decimal]] = mapped_column(Numeric(18, 4))
-    main_amount_fc: Mapped[Optional[Decimal]] = mapped_column(Numeric(18, 4))
-    amount: Mapped[Optional[Decimal]] = mapped_column(Numeric(18, 4))
+    sales_revenue: Mapped[Optional[Decimal]] = mapped_column(Numeric(18, 4))
+    sales_amount_fc: Mapped[Optional[Decimal]] = mapped_column(Numeric(18, 4))
+    tax_amount: Mapped[Optional[Decimal]] = mapped_column(Numeric(18, 4))
     tax_amount_fc: Mapped[Optional[Decimal]] = mapped_column(Numeric(18, 4))
-    amount_tax: Mapped[Optional[Decimal]] = mapped_column(Numeric(18, 4))
-    amount_fc_tax: Mapped[Optional[Decimal]] = mapped_column(Numeric(18, 4))
+    sales_amount_tax: Mapped[Optional[Decimal]] = mapped_column(Numeric(18, 4))
+    sales_amount_fc_tax: Mapped[Optional[Decimal]] = mapped_column(Numeric(18, 4))
     return_quantity: Mapped[Optional[Decimal]] = mapped_column(Numeric(18, 4))
 
     business_partner: Mapped["BusinessPartner"] = relationship()
-    
     product: Mapped["Product"] = relationship(foreign_keys=[product_key])
     source_product: Mapped["Product"] = relationship(foreign_keys=[source_product_key])
-    
     document_type: Mapped["DocumentType"] = relationship()
     sell_type: Mapped["SellType"] = relationship()
     cost_center: Mapped["CostCenter"] = relationship()
