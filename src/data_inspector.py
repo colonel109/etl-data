@@ -6,18 +6,21 @@ class DebugViewInspector:
     """
     Kiểm tra xem các view debug trong bảng staging có dữ liệu không
     """
-    def __init__(self, engine, base_path):
+    def __init__(self, engine):
         self.engine = engine
-        self.has_error = False
-        self.base_path = base_path
 
     def view_inspector(self, schema_name):
         inspector = inspect(self.engine)
 
-        view_names = inspector.get_view_names(schema=schema_name)
+        view_names = [
+            view for view in
+            inspector.get_view_names(schema=schema_name)
+            if "debug" in view
+        ]
         
-        # Lấy danh sách các view có lỗi
+        has_error = False
         view_has_error = []
+        result: dict = {}
         with self.engine.connect() as conn:
             for view in view_names:
                 target_view = f"{schema_name}.{view}"
@@ -27,21 +30,16 @@ class DebugViewInspector:
                 if row_count == 0:
                     continue 
 
+                has_error=True
                 view_has_error.append(target_view)
         
-            print(view_has_error) 
             if not view_has_error:
-                return
+                print("Tất cả bảng đều được map foreign key")
+                return {}, has_error
             
             for view in view_has_error:
-                with pd.ExcelWriter(f"{Path(self.base_path/ "result")}.xlsx", engine="openpyxl") as writer:
-                    self.has_error = True
+                stmt = text(f"SELECT * FROM {view}")
+                df = pd.read_sql_query(stmt, con=conn)
+                result[view] = df 
 
-                    stmt = text(f"SELECT * FROM {view}")
-                    df = pd.read_sql_query(stmt, con=conn)
-
-                    df.to_excel(
-                        excel_writer=writer, 
-                        sheet_name=view,
-                        index=False
-                    )
+            return result, has_error

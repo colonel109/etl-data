@@ -12,3 +12,6 @@ wheels/
 # Folder 
 data/
 .idea
+
+# Other
+*.xlsx
