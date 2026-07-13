@@ -1,9 +1,9 @@
 import pandas as pd
-from sqlalchemy import create_engine, text
-from src.database.structure import Base, TransactionsStaging
+from sqlalchemy import text
+from src.database.structure import Base
 
 
-class DatabaseClient:
+class DatabaseController:
     def __init__(self, engine):
         self.engine = engine 
     
@@ -280,6 +280,10 @@ class DatabaseClient:
             conn.execute(setup_sql)        
 
     def insert_dataframe(self, df: pd.DataFrame, table_name: str, schema: str, chunksize: int = 10000):
+        """
+        Hàm này nhận các dataframe và nhập vào database, có thể dùng chung giữa các pipeline
+        """
+        
         if df.empty:
             return
         
