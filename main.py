@@ -22,6 +22,7 @@ class MainPipeline:
         
         result, has_error = self.sales_data_processor.read_excel(file_path_list=file_paths)
         if has_error:
+            self.result_writer.write_result(data_single=result)
             print("Có lỗi, đang dừng chương trình")
             return
 
@@ -35,7 +36,7 @@ class MainPipeline:
         result, has_error = self.view_debugger.view_inspector("staging")
         if has_error:
             print("Thiếu thông tin, vui lòng cập nhật")
-            self.result_writer.write_result(result)
+            self.result_writer.write_result(data_list=result)
             return 
         
         self.sales_data_processor.main_table_importer()

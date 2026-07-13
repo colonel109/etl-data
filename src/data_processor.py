@@ -84,18 +84,19 @@ class SalesDataProcessor:
                             # Trường hợp thiếu cột không nằm trong loại file order / ar_invoice
                             col_exclusive_compare = self.col_exclusive_dict.get(col_name)
                             if col_exclusive_compare and col_exclusive_compare != file_type:
-                                continue 
+                                continue
                             
                             # Trường hợp không tìm thấy cột nào được map với tên cột trong file gốc
                             if not any(col in raw_col_name_list for col in raw_col_list): 
-                                not_mapped_info = {col_name: file.stem}
+                                not_mapped_info = {
+                                    "Tên file ": file.stem,
+                                    "Tên cột chưa map": col_name
+                                }
                                 not_mapped_columns.append(not_mapped_info)
                                 has_missing_col = True
-                        
-                        print(not_mapped_columns)
                                 
                         if has_missing_col:
-                            has_error = True
+                            has_error = True # Trả về lỗi chung, batch này sẽ không được import vào database
                             continue
 
                         print("Đã map đủ tất cả các cột bắt buộc!")
@@ -128,9 +129,9 @@ class SalesDataProcessor:
                     except Exception as e:
                         print(e)
         
-            if len(completed_dfs) == 0: 
-                print("Không có kết quả")
-                return None, has_error
+        if has_missing_col or has_error: 
+            result = {"Cột còn thiếu": not_mapped_columns}
+            return result, has_error
             
         result = pd.concat(completed_dfs, ignore_index=True)
         return result, has_error
