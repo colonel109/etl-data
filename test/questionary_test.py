@@ -54,10 +54,40 @@ class PipelineSelector:
                     for item in file_type
                 ]
                 return path
+    
+    def file_selector(self, folder_paths: list):
+        selected_files = []
+        folders = folder_paths
+
+        if folders:
+            for folder in folders:
+                if not folder.exists():
+                    continue
+
+                files = [f for f in folder.iterdir() if f.is_file()]
+
+                if not files:
+                    continue
+
+                file_map = {f.name: f for f in files}
+
+                chosen_names = questionary.checkbox(
+                    f"Chọn các file trong thư mục [{folder.name}]:",
+                    choices=list(file_map.keys()),
+                ).ask()
+
+                if chosen_names:
+                    for name in chosen_names:
+                        selected_files.append(file_map[name])
+        
+        return selected_files
+        
 
 pipeline_selector = PipelineSelector(
     base_path=Path(r"D:\Projects\etl-data\data"),
     pipeline=pipeline
 )
-path = pipeline_selector.pipeline_selector()
-print(path)
+
+folders = pipeline_selector.pipeline_selector()
+selected_files = pipeline_selector.file_selector(folder_paths=folders)
+print(selected_files)
