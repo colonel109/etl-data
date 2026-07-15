@@ -308,8 +308,15 @@ class DatabaseController:
                     copy.write_row(row)
     
     def truncate_table(self, target_table: str, target_schema: str):
-        table = target_table
-        schema = target_schema
-        sql = text(f"TRUNCATE TABLE {schema}.{table} RESTART IDENTITY")
+        target = f"{target_schema}.{target_table}" 
+        print(f"Đang xoá dữ liệu của bảng {target}")
+        sql = text(f"TRUNCATE TABLE {target} RESTART IDENTITY")
         with self.engine.begin() as conn:
+            conn.execute(sql)
+    
+    def refresh_view(self, target_view: str, target_schema: str):
+        target = f"{target_schema}.{target_view}"
+        print(f"Đang làm mới dữ liệu của view: {target}")
+        sql = text(f"REFRESH MATERIALIZED VIEW {target}")
+        with self.engine.connect() as conn:
             conn.execute(sql)

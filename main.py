@@ -59,6 +59,11 @@ class MainPipeline:
                 return 
             
             self.sales_data_processor.copy_to_main_table(target_table=table)
+
+            self.database_controller.refresh_view(
+                target_schema="main",
+                target_view="view_unpivoted_transactions"
+            )
         
         else:
             return
