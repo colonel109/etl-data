@@ -10,9 +10,9 @@ class PipelineSelector:
     def __init__(self, data_path: Path):
         self.data_path = data_path
 
-    def select_folder(self):
+    def select_pipeline(self):
         """
-        Lấy các folder dựa vào pipeline được chọn
+        Trả về tên pipeline, đường dẫn tới file và bảng đích để phục vụ việc import vào database
         """
         
         pipeline = {
@@ -32,11 +32,13 @@ class PipelineSelector:
         ).ask()
 
         selected_pipeline = pipeline[pipeline_select]
+        target_pipeline = str(list(selected_pipeline.keys())[0]) # Lấy trên của pipeline đó
 
         # Chọn pipeline xử lí dữ liệu lỗ lãi
         if pipeline_select == "Dữ liệu lỗ lãi":
+            
             path = self.data_path / selected_pipeline
-            return path
+            return path, selected_pipeline, target_table
 
         # Chọn piple xử lí dữ liệu bán hàng
         if pipeline_select == "Dữ liệu bán hàng":
@@ -48,9 +50,12 @@ class PipelineSelector:
 
             file_type_dict = report_type_dict[sales_type]
             if sales_type == "Dữ liệu ngày":
-                return self.data_path / "sales" / file_type_dict
+                target_table = "transactions_daily" 
+                path = [self.data_path / "sales" / file_type_dict] # chuyển sang list để khớp với đầu vào của hàm đọc file
+                return path, target_pipeline, target_table 
             
             if sales_type == "Dữ liệu tháng":
+                target_table = "transactions"
                 file_type = questionary.checkbox(
                     "Chọn loại file cần xử lí",
                     choices = list(file_type_dict.keys())
@@ -60,9 +65,9 @@ class PipelineSelector:
                     self.data_path / "sales" / file_type_dict[item]
                     for item in file_type
                 ]
-                return path
+                return path, target_pipeline, target_table
     
-    def select_file(self, folder_paths: list):
+    def select_file(self, folder_paths: list | Path):
         """
         Lấy các path của các file được chọn từ danh sách folder được truyển vào
         """

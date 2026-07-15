@@ -18,35 +18,38 @@ class MainPipeline:
         self.pipeline = PipelineSelector(data_path)
     
     def select_file_path(self):
-        folder_list = self.pipeline.select_folder()
-        file_paths = self.pipeline.select_file(folder_paths=folder_list)
-        return file_paths
+        path, pipeline, table  = self.pipeline.select_pipeline()
+        file_paths = self.pipeline.select_file(folder_paths=path)
+        return file_paths, pipeline, table
         
-    def process_file(self, file_paths):
+    def process_file(self, file_paths, selected_pipeline, table):
         """
         Xử lí dữ liệu và import vào database
         """
+        if selected_pipeline == "sales": 
+            result, has_error = self.sales_data_processor.read_excel(file_path_list=file_paths)
+            if has_error:
+                self.result_writer.write_result(data_single=result)
+                print("Có lỗi, đang dừng chương trình")
+                return
+
+            self.database_controller.insert_dataframe(
+                df=result,
+                table_name="transactions",
+                schema="staging"
+            )
+
+            # Kiểm tra các view debug có trả về lỗi hay không
+            result, has_error = self.view_debugger.view_inspector("staging")
+            if has_error:
+                print("Thiếu thông tin, vui lòng cập nhật")
+                self.result_writer.write_result(data_list=result)
+                return 
+            
+            self.sales_data_processor.import_to_database(target_table=table)
         
-        result, has_error = self.sales_data_processor.read_excel(file_path_list=file_paths)
-        if has_error:
-            self.result_writer.write_result(data_single=result)
-            print("Có lỗi, đang dừng chương trình")
+        else:
             return
-
-        self.database_controller.insert_dataframe(
-            df=result,
-            table_name="transactions",
-            schema="staging"
-        )
-
-        # Kiểm tra các view debug có trả về lỗi hay không
-        result, has_error = self.view_debugger.view_inspector("staging")
-        if has_error:
-            print("Thiếu thông tin, vui lòng cập nhật")
-            self.result_writer.write_result(data_list=result)
-            return 
-        
-        self.sales_data_processor.main_table_importer()
 
 BASE_PATH = Path().cwd()
 DATA_PATH = BASE_PATH / "data"
@@ -58,9 +61,11 @@ if __name__ == "__main__":
         engine=create_engine("postgresql+psycopg://postgres:duong1234@localhost:5432/daesang_db_test")
     )
 
-    file_paths = main_pipeline.select_file_path()
+    file_paths, pipeline, table = main_pipeline.select_file_path()
 
     if file_paths:
         main_pipeline.process_file(
-            file_paths=file_paths
+            selected_pipeline=pipeline,
+            file_paths=file_paths,
+            table=table
         )
