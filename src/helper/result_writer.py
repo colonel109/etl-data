@@ -16,7 +16,7 @@ class ResultWriter:
         - data_single: {tên sheet: {tên cột1: giá trị1, tên cột2: giá trị2}}
         """
         print(data_list)
-        with pd.ExcelWriter(Path(self.base_path / "error_result.xlsx")) as writer:
+        with pd.ExcelWriter(Path(self.base_path / "result" / "error_result.xlsx")) as writer:
             if data_list:
                 for sheet_name, dataframe in data_list.items():
                     dataframe.to_excel(

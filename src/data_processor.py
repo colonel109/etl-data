@@ -167,8 +167,8 @@ class SalesDataProcessor:
                     tax_amount, tax_amount_fc, sales_amount_tax,
                     sales_amount_fc_tax, return_quantity
                 )
-                SELECT 
-                    COALESCE(bp.business_partner_key, 0) AS business_partner_key,
+                SELECT
+                    business_partner_key,
                     COALESCE(p.product_key, 0) AS product_key,
                     COALESCE(pm.product_key, 0) AS source_product_key,
                     COALESCE(dts.document_type_key, 0) AS document_type_key,
@@ -192,9 +192,9 @@ class SalesDataProcessor:
                     t.sales_amount_tax, t.sales_amount_fc_tax,
                     t.return_quantity
                 FROM staging.transactions t
-                LEFT JOIN main.business_partner bp 
+                JOIN main.business_partner bp 
                     ON t.business_partner_code = bp.business_partner_code 
-                AND (t.posting_date >= bp.valid_from AND (t.posting_date < bp.valid_to OR bp.valid_to IS NULL))
+                AND (t.posting_date >= bp.valid_from AND (t.posting_date <= bp.valid_to OR bp.valid_to IS NULL))
                 LEFT JOIN main.product p ON t.product_code = p.product_code 
                 LEFT JOIN main.product pm ON t.source_product_code = pm.product_code
                 LEFT JOIN staging.document_type_staging dts ON t.document_type_name = dts.raw_value
