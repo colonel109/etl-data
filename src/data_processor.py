@@ -149,7 +149,7 @@ class SalesDataProcessor:
                 return file_type
         return None
     
-    def import_to_database(self, target_table):
+    def copy_to_main_table(self, target_table):
         """
         Lấy dữ liệu từ bảng staging trong database và import vào bảng đích
         """

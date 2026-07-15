@@ -286,11 +286,6 @@ class DatabaseController:
         
         if df.empty:
             return
-        
-        with self.engine.connect() as conn:
-            sql = text("TRUNCATE TABLE staging.transactions RESTART IDENTITY")
-            conn.execute(sql)
-            conn.commit()
 
         df.to_sql(
             name=table_name,
@@ -311,3 +306,10 @@ class DatabaseController:
             with cur.copy(f"COPY {table_name} ({columns}) FROM STDIN") as copy:
                 for row in data_iter:
                     copy.write_row(row)
+    
+    def truncate_table(self, target_table: str, target_schema: str):
+        table = target_table
+        schema = target_schema
+        sql = text(f"TRUNCATE TABLE {schema}.{table} RESTART IDENTITY")
+        with self.engine.begin() as conn:
+            conn.execute(sql)

@@ -32,6 +32,18 @@ class MainPipeline:
                 self.result_writer.write_result(data_single=result)
                 print("Có lỗi, đang dừng chương trình")
                 return
+            
+            # Xoá dữ liệu cũ ở bảng transactions staging
+            self.database_controller.truncate_table(
+                target_table="transactions",
+                target_schema="staging"
+            )
+
+            # Luôn xoá bảng daily để tránh việc dup dữ liệu khi import dữ liệu tháng 
+            self.database_controller.truncate_table(
+                target_table="transactions_daily",
+                target_schema="main"
+            )
 
             self.database_controller.insert_dataframe(
                 df=result,
@@ -46,7 +58,7 @@ class MainPipeline:
                 self.result_writer.write_result(data_list=result)
                 return 
             
-            self.sales_data_processor.import_to_database(target_table=table)
+            self.sales_data_processor.copy_to_main_table(target_table=table)
         
         else:
             return
