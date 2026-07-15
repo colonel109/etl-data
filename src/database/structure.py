@@ -316,6 +316,7 @@ class Province(Base):
     
     business_partners: Mapped[List["BusinessPartner"]] = relationship(back_populates="province")
 
+
 class BusinessPartnerType(Base):
     __tablename__ = "business_partner_type"
     __table_args__ = {"schema": "main"}
@@ -514,4 +515,85 @@ class Transactions(Base):
     profit_center: Mapped["ProfitCenter"] = relationship()
     warehouse: Mapped["Warehouse"] = relationship()
     return_type: Mapped["ReturnType"] = relationship()
-    uom: Mapped["Uom"] = relationship()
+    uom: Mapped["Uom"] = relationship() 
+
+
+class TransactionsDaily(Base):
+    __tablename__ = "transactions_daily"
+    __table_args__ = {"schema": "main"}
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    import_date: Mapped[datetime.datetime] = mapped_column(
+        DateTime, server_default=func.now()
+    )
+
+    business_partner_key: Mapped[int] = mapped_column(
+        ForeignKey("main.business_partner.business_partner_key", ondelete="RESTRICT")
+    )
+    product_key: Mapped[int] = mapped_column(
+        ForeignKey("main.product.product_key", ondelete="RESTRICT")
+    )
+    source_product_key: Mapped[int] = mapped_column(
+        ForeignKey("main.product.product_key", ondelete="RESTRICT")
+    )
+    document_type_key: Mapped[int] = mapped_column(
+        ForeignKey("main.document_type.document_type_key", ondelete="RESTRICT")
+    )
+    sell_type_key: Mapped[int] = mapped_column(
+        ForeignKey("main.sell_type.sell_type_key", ondelete="RESTRICT")
+    )
+    cost_center_key: Mapped[int] = mapped_column(
+        ForeignKey("main.cost_center.cost_center_key", ondelete="RESTRICT")
+    )
+    profit_center_key: Mapped[int] = mapped_column(
+        ForeignKey("main.profit_center.profit_center_key", ondelete="RESTRICT")
+    )
+    warehouse_key: Mapped[int] = mapped_column(
+        ForeignKey("main.warehouse.warehouse_key", ondelete="RESTRICT")
+    )
+    return_type_key: Mapped[int] = mapped_column(
+        ForeignKey("main.return_type.return_type_key", ondelete="RESTRICT")
+    )
+    uom_key: Mapped[int] = mapped_column(
+        ForeignKey("main.uom.uom_key", ondelete="RESTRICT")
+    )
+    tax_key: Mapped[int] = mapped_column(
+        ForeignKey("main.tax.tax_key", ondelete="RESTRICT")
+    )
+
+    document_no: Mapped[Optional[str]] = mapped_column(String)
+    tax_number: Mapped[Optional[str]] = mapped_column(String)
+    
+    posting_date: Mapped[Optional[datetime.date]] = mapped_column(Date)
+    due_date: Mapped[Optional[datetime.date]] = mapped_column(Date)
+    demand_date: Mapped[Optional[datetime.date]] = mapped_column(Date)
+    final_delivery_date: Mapped[Optional[datetime.date]] = mapped_column(Date)
+
+    weight: Mapped[Optional[Decimal]] = mapped_column(Numeric)
+    uom_per_quantity: Mapped[Optional[Decimal]] = mapped_column(Numeric)
+    uom_quantity: Mapped[Optional[Decimal]] = mapped_column(Numeric)
+    quantity: Mapped[Optional[Decimal]] = mapped_column(Numeric)
+    quantity_packaging_uom: Mapped[Optional[Decimal]] = mapped_column(Numeric)
+    box: Mapped[Optional[Decimal]] = mapped_column(Numeric)
+    base_price: Mapped[Optional[Decimal]] = mapped_column(Numeric)
+    discount_percent: Mapped[Optional[Decimal]] = mapped_column(Numeric)
+    discounted_price: Mapped[Optional[Decimal]] = mapped_column(Numeric)
+    discounted_price_tax: Mapped[Optional[Decimal]] = mapped_column(Numeric)
+    sales_revenue: Mapped[Optional[Decimal]] = mapped_column(Numeric)
+    sales_amount_fc: Mapped[Optional[Decimal]] = mapped_column(Numeric)
+    tax_amount: Mapped[Optional[Decimal]] = mapped_column(Numeric)
+    tax_amount_fc: Mapped[Optional[Decimal]] = mapped_column(Numeric)
+    sales_amount_tax: Mapped[Optional[Decimal]] = mapped_column(Numeric)
+    sales_amount_fc_tax: Mapped[Optional[Decimal]] = mapped_column(Numeric)
+    return_quantity: Mapped[Optional[Decimal]] = mapped_column(Numeric)
+
+    business_partner: Mapped["BusinessPartner"] = relationship()
+    product: Mapped["Product"] = relationship(foreign_keys=[product_key])
+    source_product: Mapped["Product"] = relationship(foreign_keys=[source_product_key])
+    document_type: Mapped["DocumentType"] = relationship()
+    sell_type: Mapped["SellType"] = relationship()
+    cost_center: Mapped["CostCenter"] = relationship()
+    profit_center: Mapped["ProfitCenter"] = relationship()
+    warehouse: Mapped["Warehouse"] = relationship()
+    return_type: Mapped["ReturnType"] = relationship()
+    uom: Mapped["Uom"] = relationship() 
