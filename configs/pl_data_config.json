@@ -1,66 +1,258 @@
 {
-    "profit_center_code": ["ProfitCenter"],
-    "profit_center_name": ["ProfitCenterName"],
-    "business_partner_code": ["CardCode"],
-    "business_partner_name": ["CardCodeName"],
-    "product_code": ["Item"],
-    "product_name": ["ItemName"],
-    "quantity_net": ["SalesQty"],
-    "quantity_inventory_uom": ["SalesQty(Inventory Uom)"],
-    "sales_net": ["SALES"],
-    "cost_of_good_sold": ["COST OF GOODS SOLD"],
-    "cost_of_good_sold_s": ["Cost of goods solds S"],
-    "provision_for_decline": ["Provision for decline in inventory"],
-    "gross_profit": ["GROSS PROFIT"],
-    "operating_expense": ["OPERATING EXPENSE"],
-    "selling_expense": ["SELLING EXPENSE"],
-    "salary_allowance_s": ["Salary  Allowance(S)"],
-    "tools_equipment_s": ["Tools  Equipment(S)"],
-    "depreciation_s": ["Depreciation(S)"],
-    "water_lighting_s": ["Water  Lighting(S)"],
-    "communication_s": ["Communication(S)"],
-    "oil_fee_s": ["Oil Fee(S)"],
-    "repair_s": ["Repair(S)"],
-    "travelling_s": ["Travelling(S)"],
-    "export_transportation_s": ["Export Transportation(S)"],
-    "transportation_s": ["Transportation"],
-    "sale_promotions_s": ["Sale promotions(S)"],
-    "sale_promotions_item": ["Sale promotions(Item)"],
-    "porters_fee_s": ["Porters Fee(S)"],
-    "other_services_s": ["Other Services(S)"],
-    "advertise_s": ["Advertise(S)"],
-    "entertainment_s": ["Entertainment(S)"],
-    "other_expenses_by_cash_s": ["Other Expenses by cash(S)"],
-    "offices_supplies_s": ["Offices Supplies(S)"],
-    "bank_transfer_fee_s": ["Bank Transfer Fee"],
-    "administrative_expense": ["ADMINISTRATIVE EXPENSE"],
-    "office_salaries_a": ["Office Salaries(A)"],
-    "offices_supplies_a": ["Offices Supplies(A)"],
-    "depreciation_a": ["Depreciation(A)"],
-    "tax_fees_and_charges_a": ["Tax  Fees and Charges(A)"],
-    "expenses_from_provisions_a": ["Expenses from Provisions(A)"],
-    "water_lighting_a": ["Water  Lighting(A)"],
-    "communication_a": ["Communication(A)"],
-    "house_renting_a": ["House Renting(A)"],
-    "travelling_a": ["Travelling(A)"],
-    "delivery_maint_a": ["Delivery  Maint(A)"],
-    "other_repair_a": ["Other Repair(A)"],
-    "school_medical_fee_a": ["School  Medical Fee(A)"],
-    "land_renting_expense_a": ["Land Renting Expense(A)"],
-    "entertainment_a": ["Entertainment(A)"],
-    "management_service_fee_a": ["Management Service Fee(A)"],
-    "other_expenses_a": ["Other Expenses(A)"],
-    "training_education_a": ["Training  Education(A)"],
-    "operating_income": ["OPERATING INCOME"],
-    "financial_revenue": ["Financial revenue"],
-    "extraordinary_incomes": ["Extraordinary incomes"],
-    "financial_rev_exp": ["Financial Rev.  Exp."],
-    "a_non_operating_income": ["A Non-Operating income"],
-    "financial_expense": ["Financial expense"],
-    "extraordinary_expenses": ["Extraordinary expenses"],
-    "fx_loss_realized": ["FX Loss-Realized"],
-    "a_non_operating_expenses": ["A Non-Operating Expenses"],
-    "ordinary_income": ["경상이익(ORDINARY INCOME)"],
-    "income_tax": ["INCOME TAX"],
-    "net_income": ["NET INCOME"]
+    "profit_center_code": {
+        "raw_name": ["ProfitCenter"],
+        "dtype": "string"
+    }, 
+    "profit_center_name": {
+        "raw_name": ["ProfitCenterName"],
+        "dtype": "string"
+    },
+    "business_partner_code": {
+        "raw_name": ["CardCode"],
+        "dtype": "string"
+    },
+    "business_partner_name": {
+        "raw_name": ["CardCodeName"],
+        "dtype": "string"
+    },
+    "product_code": {
+        "raw_name": ["Item"],
+        "dtype": "string"
+    },
+    "product_name": {
+        "raw_name": ["ItemName"],
+        "dtype": "string"
+    },
+    "quantity_net": {
+        "raw_name": ["SalesQty"],
+        "dtype": "numeric"
+    },
+    "quantity_inventory_uom": {
+        "raw_name": ["SalesQty(Inventory Uom)"],
+        "dtype": "numeric"
+    },
+    "sales_net": {
+        "raw_name": ["SALES"],
+        "dtype": "numeric"
+    },
+    "cost_of_good_sold": {
+        "raw_name": ["COST OF GOODS SOLD"],
+        "dtype": "numeric"
+    },
+    "cost_of_good_sold_s": {
+        "raw_name": ["Cost of goods solds S"],
+        "dtype": "numeric"
+    },
+    "provision_for_decline": {
+        "raw_name": ["Provision for decline in inventory"],
+        "dtype": "numeric"
+    },
+    "gross_profit": {
+        "raw_name": ["GROSS PROFIT"],
+        "dtype": "numeric"
+    },
+    "operating_expense": {
+        "raw_name": ["OPERATING EXPENSE"],
+        "dtype": "numeric"
+    },
+    "selling_expense": {
+        "raw_name": ["SELLING EXPENSE"],
+        "dtype": "numeric"
+    },
+    "salary_allowance_s": {
+        "raw_name": ["Salary  Allowance(S)"],
+        "dtype": "numeric"
+    },
+    "tools_equipment_s": {
+        "raw_name": ["Tools  Equipment(S)"],
+        "dtype": "numeric"
+    },
+    "depreciation_s": {
+        "raw_name": ["Depreciation(S)"],
+        "dtype": "numeric"
+    },
+    "water_lighting_s": {
+        "raw_name": ["Water  Lighting(S)"],
+        "dtype": "numeric"
+    },
+    "communication_s": {
+        "raw_name": ["Communication(S)"],
+        "dtype": "numeric"
+    },
+    "oil_fee_s": {
+        "raw_name": ["Oil Fee(S)"],
+        "dtype": "numeric"
+    },
+    "repair_s": {
+        "raw_name": ["Repair(S)"],
+        "dtype": "numeric"
+    },
+    "travelling_s": {
+        "raw_name": ["Travelling(S)"],
+        "dtype": "numeric"
+    },
+    "export_transportation_s": {
+        "raw_name": ["Export Transportation(S)"],
+        "dtype": "numeric"
+    },
+    "transportation_s": {
+        "raw_name": ["Transportation"],
+        "dtype": "numeric"
+    },
+    "sale_promotions_s": {
+        "raw_name": ["Sale promotions(S)"],
+        "dtype": "numeric"
+    },
+    "sale_promotions_item": {
+        "raw_name": ["Sale promotions(Item)"],
+        "dtype": "numeric"
+    },
+    "porters_fee_s": {
+        "raw_name": ["Porters Fee(S)"],
+        "dtype": "numeric"
+    },
+    "other_services_s": {
+        "raw_name": ["Other Services(S)"],
+        "dtype": "numeric"
+    },
+    "advertise_s": {
+        "raw_name": ["Advertise(S)"],
+        "dtype": "numeric"
+    },
+    "entertainment_s": {
+        "raw_name": ["Entertainment(S)"],
+        "dtype": "numeric"
+    },
+    "other_expenses_by_cash_s": {
+        "raw_name": ["Other Expenses by cash(S)"],
+        "dtype": "numeric"
+    },
+    "offices_supplies_s": {
+        "raw_name": ["Offices Supplies(S)"],
+        "dtype": "numeric"
+    },
+    "bank_transfer_fee_s": {
+        "raw_name": ["Bank Transfer Fee"],
+        "dtype": "numeric"
+    },
+    "administrative_expense": {
+        "raw_name": ["ADMINISTRATIVE EXPENSE"],
+        "dtype": "numeric"
+    },
+    "office_salaries_a": {
+        "raw_name": ["Office Salaries(A)"],
+        "dtype": "numeric"
+    },
+    "offices_supplies_a": {
+        "raw_name": ["Offices Supplies(A)"],
+        "dtype": "numeric"
+    },
+    "depreciation_a": {
+        "raw_name": ["Depreciation(A)"],
+        "dtype": "numeric"
+    },
+    "tax_fees_and_charges_a": {
+        "raw_name": ["Tax  Fees and Charges(A)"],
+        "dtype": "numeric"
+    },
+    "expenses_from_provisions_a": {
+        "raw_name": ["Expenses from Provisions(A)"],
+        "dtype": "numeric"
+    },
+    "water_lighting_a": {
+        "raw_name": ["Water  Lighting(A)"],
+        "dtype": "numeric"
+    },
+    "communication_a": {
+        "raw_name": ["Communication(A)"],
+        "dtype": "numeric"
+    },
+    "house_renting_a": {
+        "raw_name": ["House Renting(A)"],
+        "dtype": "numeric"
+    },
+    "travelling_a": {
+        "raw_name": ["Travelling(A)"],
+        "dtype": "numeric"
+    },
+    "delivery_maint_a": {
+        "raw_name": ["Delivery  Maint(A)"],
+        "dtype": "numeric"
+    },
+    "other_repair_a": {
+        "raw_name": ["Other Repair(A)"],
+        "dtype": "numeric"
+    },
+    "school_medical_fee_a": {
+        "raw_name": ["School  Medical Fee(A)"],
+        "dtype": "numeric"
+    },
+    "land_renting_expense_a": {
+        "raw_name": ["Land Renting Expense(A)"],
+        "dtype": "numeric"
+    },
+    "entertainment_a": {
+        "raw_name": ["Entertainment(A)"],
+        "dtype": "numeric"
+    },
+    "management_service_fee_a": {
+        "raw_name": ["Management Service Fee(A)"],
+        "dtype": "numeric"
+    },
+    "other_expenses_a": {
+        "raw_name": ["Other Expenses(A)"],
+        "dtype": "numeric"
+    },
+    "training_education_a": {
+        "raw_name": ["Training  Education(A)"],
+        "dtype": "numeric"
+    },
+    "operating_income": {
+        "raw_name": ["OPERATING INCOME"],
+        "dtype": "numeric"
+    },
+    "financial_revenue": {
+        "raw_name": ["Financial revenue"],
+        "dtype": "numeric"
+    },
+    "extraordinary_incomes": {
+        "raw_name": ["Extraordinary incomes"],
+        "dtype": "numeric"
+    },
+    "financial_rev_exp": {
+        "raw_name": ["Financial Rev.  Exp."],
+        "dtype": "numeric"
+    },
+    "a_non_operating_income": {
+        "raw_name": ["A Non-Operating income"],
+        "dtype": "numeric"
+    },
+    "financial_expense": {
+        "raw_name": ["Financial expense"],
+        "dtype": "numeric"
+    },
+    "extraordinary_expenses": {
+        "raw_name": ["Extraordinary expenses"],
+        "dtype": "numeric"
+    },
+    "fx_loss_realized": {
+        "raw_name": ["FX Loss-Realized"],
+        "dtype": "numeric"
+    },
+    "a_non_operating_expenses": {
+        "raw_name": ["A Non-Operating Expenses"],
+        "dtype": "numeric"
+    },
+    "ordinary_income": {
+        "raw_name": ["경상이익(ORDINARY INCOME)"],
+        "dtype": "numeric"
+    },
+    "income_tax": {
+        "raw_name": ["INCOME TAX"],
+        "dtype": "numeric"
+    },
+    "net_income": {
+        "raw_name": ["NET INCOME"],
+        "dtype": "numeric"
+    }
 }

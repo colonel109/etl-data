@@ -32,16 +32,17 @@ class PipelineSelector:
         ).ask()
 
         selected_pipeline = pipeline[pipeline_select]
-        target_pipeline = str(list(selected_pipeline.keys())[0]) # Lấy trên của pipeline đó
 
         # Chọn pipeline xử lí dữ liệu lỗ lãi
         if pipeline_select == "Dữ liệu lỗ lãi":
-            
+            target_pipeline = selected_pipeline
+            target_table = "profit_and_loss"
             path = self.data_path / selected_pipeline
-            return path, selected_pipeline, target_table
+            return path, target_pipeline, target_table
 
         # Chọn piple xử lí dữ liệu bán hàng
         if pipeline_select == "Dữ liệu bán hàng":
+            target_pipeline = str(list(selected_pipeline.keys())[0]) # Lấy tên của pipeline đó
             report_type_dict = selected_pipeline["sales"]
             sales_type = questionary.select(
                 "Chọn loại bảng cần import:",
@@ -73,7 +74,7 @@ class PipelineSelector:
         """
         
         selected_files = []
-        folders = folder_paths
+        folders = [folder_paths]
 
         if folders:
             for folder in folders:

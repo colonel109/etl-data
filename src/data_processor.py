@@ -213,3 +213,119 @@ class SalesDataProcessor:
 
         with self.engine.begin() as conn:
             conn.execute(query)
+
+
+class ProfitAndLossProcessor:
+    def __init__(self, engine):
+        self.engine = engine
+        self.rename_dict = {}
+        self.dtype_dict = None
+        self.col_req_dict = None
+
+        self.config_loader()
+    
+    def config_loader(self):
+        """
+        Đọc file config và trích xuất thông tin cần thiết
+        """
+        
+        with open('configs/pl_data_config.json', encoding="utf-8") as config_file:
+            config_data: dict = json.load(config_file)
+        
+        # Dict dùng để phát hiện cột chưa được map trong file dữ liệu thô
+        self.col_req_dict = {
+            col_name: data["raw_name"]
+            for col_name, data in config_data.items()
+        }
+
+        # Dict chứa cột bắt buộc phải có (chỉ sử dụng các cột này)
+        self.col_use = {
+            col for dict_data in config_data.values() 
+            for col in dict_data["raw_name"]
+        }
+
+        # Từ điển đổi tên cột
+        self.rename_dict = {
+            raw_name: new_col_name 
+            for new_col_name, data in config_data.items()
+            for raw_name in data["raw_name"] 
+        }
+
+        # Từ điển đổi dtype
+        self.dtype_dict = {col: dict_data["dtype"] for col, dict_data in config_data.items()}
+
+
+    def read_excel(self, file_path_list):
+
+        completed_dfs = []
+        has_error = False # Đánh dấu batch này có file bị lỗi không
+        not_mapped_columns = [] # Lưu trữ danh sách các cột chưa được map
+
+        if file_path_list:
+            for file in file_path_list:
+                # Đọc file
+                file_name = file.stem
+                suffix = Path(file).suffix
+                
+                # Đọc file excel
+                print(f"Đang xử lí file {file_name}")
+                if suffix == ".xlsx":
+                    try:
+                        has_missing_col = False # Đánh dấu file có thiếu cột không
+                        raw_col_list = pd.read_excel(file, nrows=0).columns.tolist() # Lấy tên cột có trong file gốc
+
+                        for col_name, raw_col_name_list in self.col_req_dict.items():
+                            
+                            # Trường hợp không tìm thấy cột nào được map với tên cột trong file gốc
+                            if not any(col in raw_col_name_list for col in raw_col_list): 
+                                not_mapped_info = {
+                                    "Tên file ": file.stem,
+                                    "Tên cột chưa map": col_name
+                                }
+                                not_mapped_columns.append(not_mapped_info)
+                                has_missing_col = True
+                                
+                        if has_missing_col:
+                            has_error = True # Trả về lỗi chung, batch này sẽ không được import vào database
+                            continue
+
+                        print("Đã map đủ tất cả các cột bắt buộc!")
+                        df: pd.DataFrame = pd.read_excel(
+                            file,
+                            usecols=[col for col in self.col_use if col in raw_col_list], 
+                            dtype="string", 
+                            engine="openpyxl"
+                        )
+                        print(df)
+
+                        # Đổi tên cột
+                        df = df.rename(columns=self.rename_dict)
+                        print(df)
+
+                        # Drop dòng trống
+                        df = df.dropna(subset=['business_partner_code'])
+
+                        # Chuyển định dạng
+                        for col, dtype in self.dtype_dict.items():
+                            if col in df.columns:
+                                if dtype == "numeric":
+                                    df[col] = pd.to_numeric(df[col], errors="coerce")
+
+                                if dtype == "date":
+                                    df[col] = pd.to_datetime(df[col], errors="coerce", format="%d.%m.%Y")
+                        
+                        print(df)
+
+                        if not df.empty:
+                            df["source_file"] = file_name
+                            completed_dfs.append(df)
+                    except Exception as e:
+                        print(e)
+        
+        if has_missing_col or has_error: 
+            result = {"Cột còn thiếu": not_mapped_columns}
+            return result, has_error
+            
+        result = pd.concat(completed_dfs, ignore_index=True)
+        print(result)
+        return result, has_error

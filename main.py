@@ -1,11 +1,12 @@
 from pathlib import Path
 from sqlalchemy import create_engine
-from src.data_processor import SalesDataProcessor
+from src.data_processor import SalesDataProcessor, ProfitAndLossProcessor
 from src.database.controller import DatabaseController
 from src.data_inspector import DebugViewInspector
 from src.helper.result_writer import ResultWriter
 from src.pipeline_selector import PipelineSelector
 
+import pandas as pd
 
 class MainPipeline:
     def __init__(self, base_path, data_path, engine):
@@ -14,6 +15,7 @@ class MainPipeline:
         self.database_controller = DatabaseController(self.engine)
         self.view_debugger = DebugViewInspector(self.engine)
         self.sales_data_processor= SalesDataProcessor(self.engine)
+        self.pl_data_processor = ProfitAndLossProcessor(self.engine)
         self.result_writer = ResultWriter(base_path)
         self.pipeline = PipelineSelector(data_path)
     
@@ -65,8 +67,25 @@ class MainPipeline:
                 target_view="view_unpivoted_transactions"
             )
         
-        else:
-            return
+        elif selected_pipeline == "profit_and_loss":
+            result, has_error = self.pl_data_processor.read_excel(file_path_list=file_paths)
+            if has_error:
+                self.result_writer.write_result(data_single=result)
+                print("Có lỗi, đang dừng chương trình")
+                return
+            
+            # Xoá dữ liệu cũ ở bảng transactions staging
+            self.database_controller.truncate_table(
+                target_table="profit_and_loss",
+                target_schema="staging"
+            )
+
+            self.database_controller.insert_dataframe(
+                df=result,
+                table_name="profit_and_loss",
+                schema="staging"
+            )
+
 
 BASE_PATH = Path().cwd()
 DATA_PATH = BASE_PATH / "data"

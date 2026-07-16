@@ -606,8 +606,11 @@ class ProfitAndLossStaging(Base):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
 
     profit_center_code: Mapped[Optional[str]] = mapped_column(String)
+    profit_center_name: Mapped[Optional[str]] = mapped_column(String)
     business_partner_code: Mapped[Optional[str]] = mapped_column(String)
+    business_partner_name: Mapped[Optional[str]] = mapped_column(String)
     product_code: Mapped[Optional[str]] = mapped_column(String)
+    product_name: Mapped[Optional[str]] = mapped_column(String)
     date: Mapped[Optional[datetime.date]] = mapped_column(Date)
 
     a_non_operating_expenses: Mapped[Optional[Decimal]] = mapped_column(Numeric)
@@ -668,6 +671,7 @@ class ProfitAndLossStaging(Base):
     travelling_s: Mapped[Optional[Decimal]] = mapped_column(Numeric)
     water_lighting_a: Mapped[Optional[Decimal]] = mapped_column(Numeric)
     water_lighting_s: Mapped[Optional[Decimal]] = mapped_column(Numeric)
+    source_file: Mapped[str] = mapped_column(String)
     
     
 class ProfitAndLoss(Base):
