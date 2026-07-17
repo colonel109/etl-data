@@ -20,7 +20,7 @@ class MainPipeline:
     
     def select_file_path(self):
         path, pipeline, table  = self.pipeline.select_pipeline()
-        file_paths = self.pipeline.select_file(folder_paths=path)
+        file_paths = self.pipeline.select_file(path=path)
         return file_paths, pipeline, table
         
     def process_file(self, file_paths, selected_pipeline, table):

@@ -19,7 +19,7 @@ class DebugViewInspector:
         view_names = [
             view for view in
             inspector.get_view_names(schema=schema_name)
-            if ("debug" in view and keyword in view)
+            if "debug" in view and (keyword is None or keyword in view)
         ]
         
         has_error = False

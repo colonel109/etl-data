@@ -318,5 +318,7 @@ class DatabaseController:
         target = f"{target_schema}.{target_view}"
         print(f"Đang làm mới dữ liệu của view: {target}")
         sql = text(f"REFRESH MATERIALIZED VIEW {target}")
-        with self.engine.connect() as conn:
+        with self.engine.begin() as conn:
             conn.execute(sql)
+
+        print(f"Làm mới thành công!")

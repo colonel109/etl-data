@@ -68,16 +68,31 @@ class PipelineSelector:
                 ]
                 return path, target_pipeline, target_table
     
-    def select_file(self, folder_paths: list | Path):
+    def select_file(self, path: list | Path):
         """
         Lấy các path của các file được chọn từ danh sách folder được truyển vào
         """
         
         selected_files = []
-        folders = [folder_paths]
 
-        if folders:
-            for folder in folders:
+        # Trường hợp nhận được 1 path duy nhất
+        if isinstance(path, Path):
+            files = [f for f in path.iterdir() if f.is_file()]
+
+            file_map = {f.name: f for f in files}
+
+            chosen_names = questionary.checkbox(
+                f"Chọn các file trong thư mục [{path.name}]:",
+                choices=list(file_map.keys()),
+            ).ask()
+
+            if chosen_names:
+                for name in chosen_names:
+                    selected_files.append(file_map[name])
+
+        # Trường hợp nhận được nhận được list các folder
+        if isinstance(path, list):
+            for folder in path:
                 if not folder.exists():
                     continue
 
