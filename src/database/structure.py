@@ -604,6 +604,9 @@ class ProfitAndLossStaging(Base):
     __table_args__ = {"schema": "staging"}
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    import_date: Mapped[datetime.datetime] = mapped_column(
+        DateTime, server_default=func.now()
+    )
 
     profit_center_code: Mapped[Optional[str]] = mapped_column(String)
     profit_center_name: Mapped[Optional[str]] = mapped_column(String)
@@ -679,6 +682,9 @@ class ProfitAndLoss(Base):
     __table_args__ = {"schema": "main"}
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    import_date: Mapped[datetime.datetime] = mapped_column(
+        DateTime, server_default=func.now()
+    )
 
     profit_center_key: Mapped[Optional[int]] = mapped_column(
         ForeignKey("main.profit_center.profit_center_key", ondelete="RESTRICT")
