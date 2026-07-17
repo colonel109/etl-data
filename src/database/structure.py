@@ -132,6 +132,7 @@ class TransactionsStaging(Base):
     tax_code: Mapped[Optional[str]] = mapped_column(String)
     document_no: Mapped[Optional[str]] = mapped_column(String)
     tax_number: Mapped[Optional[str]] = mapped_column(String)
+    scenario_name: Mapped[Optional[str]] = mapped_column(Text)
 
     posting_date: Mapped[Optional[datetime.date]] = mapped_column(Date)
     due_date: Mapped[Optional[datetime.date]] = mapped_column(Date)
@@ -157,7 +158,6 @@ class TransactionsStaging(Base):
     return_quantity: Mapped[Optional[Decimal]] = mapped_column(Numeric)
     remark: Mapped[Optional[str]] = mapped_column(Text)
     source_file: Mapped[Optional[str]] = mapped_column(Text)
-    scenario: Mapped[Optional[str]] = mapped_column(Text)
 
 
 class Dept(Base):
@@ -437,6 +437,14 @@ class Tax(Base):
     tax_code: Mapped[str] = mapped_column(String, unique=True)
 
 
+class Scenario(Base):
+    __tablename__ = "scenario"
+    __table_args__ = {"schema": "main"}
+
+    scenario_key: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    scenario_name: Mapped[str] = mapped_column(String, unique=True) 
+
+
 class Transactions(Base):
     __tablename__ = "transactions"
     __table_args__ = {"schema": "main"}
@@ -478,6 +486,9 @@ class Transactions(Base):
     )
     tax_key: Mapped[int] = mapped_column(
         ForeignKey("main.tax.tax_key", ondelete="RESTRICT")
+    )
+    scenario_key: Mapped[int] = mapped_column(
+        ForeignKey("main.scenario.scenario_key", ondelete="RESTRICT")
     )
 
     document_no: Mapped[Optional[str]] = mapped_column(String)
@@ -559,6 +570,9 @@ class TransactionsDaily(Base):
     )
     tax_key: Mapped[int] = mapped_column(
         ForeignKey("main.tax.tax_key", ondelete="RESTRICT")
+    )
+    scenario_key: Mapped[int] = mapped_column(
+        ForeignKey("main.scenario.scenario_key", ondelete="RESTRICT")
     )
 
     document_no: Mapped[Optional[str]] = mapped_column(String)

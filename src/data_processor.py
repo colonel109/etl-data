@@ -125,7 +125,7 @@ class SalesDataProcessor:
 
                         if not df.empty:
                             df["source_file"] = file_name
-                            df["scenario"] = file_type
+                            df["scenario_name"] = file_type
                             completed_dfs.append(df)
                     except Exception as e:
                         print(e)
@@ -162,7 +162,7 @@ class SalesDataProcessor:
                 document_type_key, sell_type_key,
                 cost_center_key, profit_center_key,
                 warehouse_key, return_type_key,
-                uom_key, tax_key, posting_date, due_date,
+                uom_key, tax_key, scenario_key, posting_date, due_date,
                 demand_date, final_delivery_date, document_no, tax_number,
                 weight, uom_per_quantity, uom_quantity,
                 quantity, quantity_packaging_uom, box,
@@ -183,6 +183,7 @@ class SalesDataProcessor:
                 COALESCE(rts.return_type_key, 0) AS return_type_key,
                 COALESCE(us.uom_key, 0) AS uom_key,
                 COALESCE(ts.tax_key, 0) AS tax_key,
+                s.scenario_key,
                 t.posting_date, t.due_date,
                 t.demand_date, t.final_delivery_date,
                 t.document_no, t.tax_number,
@@ -199,6 +200,7 @@ class SalesDataProcessor:
             JOIN main.business_partner bp 
                 ON t.business_partner_code = bp.business_partner_code 
             AND (t.posting_date >= bp.valid_from AND (t.posting_date <= bp.valid_to OR bp.valid_to IS NULL))
+            JOIN main.scenario s ON t.scenario_name = s.scenario_name
             LEFT JOIN main.product p ON t.product_code = p.product_code 
             LEFT JOIN main.product pm ON t.source_product_code = pm.product_code
             LEFT JOIN staging.document_type_staging dts ON t.document_type_name = dts.raw_value
