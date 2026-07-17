@@ -6,7 +6,6 @@ from src.data_inspector import DebugViewInspector
 from src.helper.result_writer import ResultWriter
 from src.pipeline_selector import PipelineSelector
 
-import pandas as pd
 
 class MainPipeline:
     def __init__(self, base_path, data_path, engine):
@@ -85,7 +84,14 @@ class MainPipeline:
                 table_name="profit_and_loss",
                 schema="staging"
             )
-
+            
+            result, has_error = self.view_debugger.view_inspector("staging", "_pl")
+            if has_error:
+                print("Thiếu thông tin, vui lòng cập nhật")
+                self.result_writer.write_result(data_list=result)
+                return 
+            
+            self.pl_data_processor.copy_to_main_table()
 
 BASE_PATH = Path().cwd()
 DATA_PATH = BASE_PATH / "data"

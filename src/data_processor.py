@@ -2,6 +2,7 @@ import json
 import pandas as pd
 from pathlib import Path
 from sqlalchemy import text
+import re
 
 
 class SalesDataProcessor:
@@ -254,7 +255,6 @@ class ProfitAndLossProcessor:
         # Từ điển đổi dtype
         self.dtype_dict = {col: dict_data["dtype"] for col, dict_data in config_data.items()}
 
-
     def read_excel(self, file_path_list):
 
         completed_dfs = []
@@ -296,26 +296,24 @@ class ProfitAndLossProcessor:
                             dtype="string", 
                             engine="openpyxl"
                         )
-                        print(df)
 
                         # Đổi tên cột
                         df = df.rename(columns=self.rename_dict)
-                        print(df)
 
                         # Drop dòng trống
                         df = df.dropna(subset=['business_partner_code'])
+
+                        # Tạo date từ tên file 
+                        extracted_date = re.search(r"\d{2}\.\d{4}", file_name).group().strip()
+                        df["date"] = "01." + extracted_date
+                        df["date"] = pd.to_datetime(df["date"], errors="coerce", format="%d.%m.%Y")
 
                         # Chuyển định dạng
                         for col, dtype in self.dtype_dict.items():
                             if col in df.columns:
                                 if dtype == "numeric":
                                     df[col] = pd.to_numeric(df[col], errors="coerce")
-
-                                if dtype == "date":
-                                    df[col] = pd.to_datetime(df[col], errors="coerce", format="%d.%m.%Y")
                         
-                        print(df)
-
                         if not df.empty:
                             df["source_file"] = file_name
                             completed_dfs.append(df)
@@ -327,5 +325,148 @@ class ProfitAndLossProcessor:
             return result, has_error
             
         result = pd.concat(completed_dfs, ignore_index=True)
-        print(result)
         return result, has_error
+
+    def copy_to_main_table(self):
+        """
+        Lấy dữ liệu từ bảng staging trong database và import vào bảng đích
+        """
+        
+        query = text(
+            f"""
+            INSERT INTO main.profit_and_loss (
+                profit_center_key,
+                business_partner_key,
+                product_key,
+                "date",
+                a_non_operating_expenses,
+                a_non_operating_income,
+                administrative_expense,
+                advertise_s,
+                bank_transfer_fee_s,
+                communication_a,
+                communication_s,
+                cost_of_good_sold,
+                cost_of_good_sold_s,
+                delivery_maint_a,
+                depreciation_a,
+                depreciation_s,
+                entertainment_a,
+                entertainment_s,
+                expenses_from_provisions_a,
+                export_transportation_s,
+                extraordinary_expenses,
+                extraordinary_incomes,
+                financial_expense,
+                financial_rev_exp,
+                financial_revenue,
+                fx_loss_realized,
+                gross_profit,
+                house_renting_a,
+                income_tax,
+                land_renting_expense_a,
+                management_service_fee_a,
+                net_income,
+                office_salaries_a,
+                offices_supplies_a,
+                offices_supplies_s,
+                oil_fee_s,
+                operating_expense,
+                operating_income,
+                ordinary_income,
+                other_expenses_a,
+                other_expenses_by_cash_s,
+                other_repair_a,
+                other_services_s,
+                porters_fee_s,
+                provision_for_decline,
+                quantity_inventory_uom,
+                quantity_net,
+                repair_s,
+                salary_allowance_s,
+                sale_promotions_item,
+                sale_promotions_s,
+                sales_net,
+                school_medical_fee_a,
+                selling_expense,
+                tax_fees_and_charges_a,
+                tools_equipment_s,
+                training_education_a,
+                transportation_s,
+                travelling_a,
+                travelling_s,
+                water_lighting_a,
+                water_lighting_s
+            )
+            SELECT
+                COALESCE(pc.profit_center_key, 0) AS profit_center_key,
+                COALESCE(bp.business_partner_key, 0) AS business_partner_key,
+                COALESCE(p.product_key, 0) AS product_key,
+                pal.date,
+                COALESCE(pal.a_non_operating_expenses, 0) AS a_non_operating_expenses,
+                COALESCE(pal.a_non_operating_income, 0) AS a_non_operating_income,
+                COALESCE(pal.administrative_expense, 0) AS administrative_expense,
+                COALESCE(pal.advertise_s, 0) AS advertise_s,
+                COALESCE(pal.bank_transfer_fee_s, 0) AS bank_transfer_fee_s,
+                COALESCE(pal.communication_a, 0) AS communication_a,
+                COALESCE(pal.communication_s, 0) AS communication_s,
+                COALESCE(pal.cost_of_good_sold, 0) AS cost_of_good_sold,
+                COALESCE(pal.cost_of_good_sold_s, 0) AS cost_of_good_sold_s,
+                COALESCE(pal.delivery_maint_a, 0) AS delivery_maint_a,
+                COALESCE(pal.depreciation_a, 0) AS depreciation_a,
+                COALESCE(pal.depreciation_s, 0) AS depreciation_s,
+                COALESCE(pal.entertainment_a, 0) AS entertainment_a,
+                COALESCE(pal.entertainment_s, 0) AS entertainment_s,
+                COALESCE(pal.expenses_from_provisions_a, 0) AS expenses_from_provisions_a,
+                COALESCE(pal.export_transportation_s, 0) AS export_transportation_s,
+                COALESCE(pal.extraordinary_expenses, 0) AS extraordinary_expenses,
+                COALESCE(pal.extraordinary_incomes, 0) AS extraordinary_incomes,
+                COALESCE(pal.financial_expense, 0) AS financial_expense,
+                COALESCE(pal.financial_rev_exp, 0) AS financial_rev_exp,
+                COALESCE(pal.financial_revenue, 0) AS financial_revenue,
+                COALESCE(pal.fx_loss_realized, 0) AS fx_loss_realized,
+                COALESCE(pal.gross_profit, 0) AS gross_profit,
+                COALESCE(pal.house_renting_a, 0) AS house_renting_a,
+                COALESCE(pal.income_tax, 0) AS income_tax,
+                COALESCE(pal.land_renting_expense_a, 0) AS land_renting_expense_a,
+                COALESCE(pal.management_service_fee_a, 0) AS management_service_fee_a,
+                COALESCE(pal.net_income, 0) AS net_income,
+                COALESCE(pal.office_salaries_a, 0) AS office_salaries_a,
+                COALESCE(pal.offices_supplies_a, 0) AS offices_supplies_a,
+                COALESCE(pal.offices_supplies_s, 0) AS offices_supplies_s,
+                COALESCE(pal.oil_fee_s, 0) AS oil_fee_s,
+                COALESCE(pal.operating_expense, 0) AS operating_expense,
+                COALESCE(pal.operating_income, 0) AS operating_income,
+                COALESCE(pal.ordinary_income, 0) AS ordinary_income,
+                COALESCE(pal.other_expenses_a, 0) AS other_expenses_a,
+                COALESCE(pal.other_expenses_by_cash_s, 0) AS other_expenses_by_cash_s,
+                COALESCE(pal.other_repair_a, 0) AS other_repair_a,
+                COALESCE(pal.other_services_s, 0) AS other_services_s,
+                COALESCE(pal.porters_fee_s, 0) AS porters_fee_s,
+                COALESCE(pal.provision_for_decline, 0) AS provision_for_decline,
+                COALESCE(pal.quantity_inventory_uom, 0) AS quantity_inventory_uom,
+                COALESCE(pal.quantity_net, 0) AS quantity_net,
+                COALESCE(pal.repair_s, 0) AS repair_s,
+                COALESCE(pal.salary_allowance_s, 0) AS salary_allowance_s,
+                COALESCE(pal.sale_promotions_item, 0) AS sale_promotions_item,
+                COALESCE(pal.sale_promotions_s, 0) AS sale_promotions_s,
+                COALESCE(pal.sales_net, 0) AS sales_net,
+                COALESCE(pal.school_medical_fee_a, 0) AS school_medical_fee_a,
+                COALESCE(pal.selling_expense, 0) AS selling_expense,
+                COALESCE(pal.tax_fees_and_charges_a, 0) AS tax_fees_and_charges_a,
+                COALESCE(pal.tools_equipment_s, 0) AS tools_equipment_s,
+                COALESCE(pal.training_education_a, 0) AS training_education_a,
+                COALESCE(pal.transportation_s, 0) AS transportation_s,
+                COALESCE(pal.travelling_a, 0) AS travelling_a,
+                COALESCE(pal.travelling_s, 0) AS travelling_s,
+                COALESCE(pal.water_lighting_a, 0) AS water_lighting_a,
+                COALESCE(pal.water_lighting_s, 0) AS water_lighting_s
+            FROM staging.profit_and_loss pal
+            LEFT JOIN main.profit_center pc USING (profit_center_code)
+            LEFT JOIN main.business_partner bp USING (business_partner_code)
+            LEFT JOIN main.product p USING (product_code);
+            """
+            )
+
+        with self.engine.begin() as conn:
+            conn.execute(query)

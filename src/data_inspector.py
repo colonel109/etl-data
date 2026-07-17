@@ -9,13 +9,17 @@ class DebugViewInspector:
     def __init__(self, engine):
         self.engine = engine
 
-    def view_inspector(self, schema_name):
+    def view_inspector(self, schema_name: str, keyword: str = None):
+        """
+        Kiểm tra các view debug, trả về lỗi nếu có dữ liệu
+        """
+        
         inspector = inspect(self.engine)
 
         view_names = [
             view for view in
             inspector.get_view_names(schema=schema_name)
-            if "debug" in view
+            if ("debug" in view and keyword in view)
         ]
         
         has_error = False
