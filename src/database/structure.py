@@ -207,6 +207,7 @@ class Team(Base):
 
     business_partners: Mapped[List["BusinessPartner"]] = relationship(back_populates="team")
 
+
 class KpiGroup(Base):
     __tablename__ = "kpi_group"
     __table_args__ = {"schema": "main"}
@@ -265,6 +266,34 @@ class DucvietCategoryGroup(Base):
 
     products: Mapped[List["Product"]] = relationship(back_populates="ducviet_category_group")
 
+    
+class ProductBrand(Base):
+    __tablename__ = "product_brand"
+    __table_args__ = {"schema": "main"}
+    
+    product_brand_key: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    product_brand_name: Mapped[str] = mapped_column(String, unique=True)
+
+    products: Mapped[List["Product"]] = relationship(back_populates="product_brand")
+
+class ProductionSource(Base):
+    __tablename__ = "production_source"
+    __table_args__ = {"schema": "main"}
+
+    production_source_key: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    production_source_name: Mapped[str] = mapped_column(String, unique=True)
+
+    products: Mapped[List["Product"]] = relationship(back_populates="production_source")
+
+class ProductFlavor(Base):
+    __tablename__ = "product_flavor"
+    __table_args__ = {"schema": "main"}
+
+    product_flavor_key: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    product_flavor_name: Mapped[str] = mapped_column(String, unique=True)
+
+    products: Mapped[List["Product"]] = relationship(back_populates="product_flavor")
+
 
 class Product(Base):
     __tablename__ = "product"
@@ -274,18 +303,33 @@ class Product(Base):
     product_code: Mapped[str] = mapped_column(String)
     product_name: Mapped[Optional[str]] = mapped_column(String)
     product_name_eng: Mapped[Optional[str]] = mapped_column(String)
+    product_spec: Mapped[Optional[str]] = mapped_column(Numeric)
     product_category_key: Mapped[int] = mapped_column(
         ForeignKey("main.product_category.product_category_key")
+    )
+    product_brand_key: Mapped[int] = mapped_column(
+        ForeignKey("main.product_brand.product_brand_key"),
+        server_default="0"
+    )
+    production_source_key: Mapped[int] = mapped_column(
+        ForeignKey("main.production_source.production_source_key"),
+        server_default="0"
+    )
+    product_flavor_key: Mapped[int] = mapped_column(
+        ForeignKey("main.product_flavor.product_flavor_key") ,
+        server_default="0"
     )
     market_key: Mapped[int] = mapped_column(
         ForeignKey("main.market.market_key"), 
         server_default="1" 
     )
     msg_group_key: Mapped[int] = mapped_column(
-        ForeignKey("main.msg_group.msg_group_key")
+        ForeignKey("main.msg_group.msg_group_key"),
+        server_default="0"
     )
     ducviet_category_key: Mapped[int] = mapped_column(
-        ForeignKey("main.ducviet_category_group.ducviet_category_key")
+        ForeignKey("main.ducviet_category_group.ducviet_category_key"),
+        server_default="0"
     )
     imported_date: Mapped[datetime.date] = mapped_column(
         Date, server_default=func.now()
@@ -295,7 +339,9 @@ class Product(Base):
     market: Mapped["Market"] = relationship(back_populates="products")
     msg_group: Mapped["MsgGroup"] = relationship(back_populates="products")
     ducviet_category_group: Mapped["DucvietCategoryGroup"] = relationship(back_populates="products")
-
+    product_brand: Mapped["ProductBrand"] = relationship(back_populates="products")
+    production_source: Mapped["ProductionSource"] = relationship(back_populates="products")
+    product_flavor: Mapped["ProductFlavor"] = relationship(back_populates="products")
 
 class Warehouse(Base):
     __tablename__ = "warehouse"
