@@ -93,6 +93,12 @@ class MainPipeline:
             
             self.pl_data_processor.copy_to_main_table()
 
+            self.database_controller.refresh_view(
+                target_schema="main",
+                target_view="view_unpivoted_transactions"
+            )
+
+
 BASE_PATH = Path().cwd()
 DATA_PATH = BASE_PATH / "data"
 
