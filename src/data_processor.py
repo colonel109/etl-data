@@ -4,6 +4,8 @@ from pathlib import Path
 from sqlalchemy import text
 import re
 
+from src.helper.config_loader import ConfigLoader
+
 
 class SalesDataProcessor:
     """
@@ -12,50 +14,7 @@ class SalesDataProcessor:
 
     def __init__(self, engine):
         self.engine = engine
-        
-        self.rename_dict = {} # Lưu trữ từ điển đổi tên cột
-        self.dtype_dict = None # Lưu trữ từ điển đổi dtype
-        self.col_req_dict = {} # Lưu trữ từ điển các cột / tên cột gốc để so sánh với file thô
-        self.col_exclusive_dict = None # Lưu trữ các tên cột
-        self.col_use = None # Lưu trữ các cột bắt buộc
-
-        self.config_loader()
-        
-    def config_loader(self):
-        """
-        Đọc file config và trích xuất thông tin cần thiết
-        """
-        
-        with open('configs/sales_data_config.json') as config_file:
-            config_data: dict = json.load(config_file)
-        
-        # Dict dùng để phát hiện cột chưa được map trong file dữ liệu thô
-        self.col_req_dict = {
-            col_name: data["raw_name"]
-            for col_name, data in config_data.items()
-        }
-
-        # Dict dùng để bỏ qua các cột chỉ nằm ở một loại file
-        self.col_exclusive_dict = {
-            col_name: data["exclusive"]
-            for col_name, data in config_data.items() if data.get("exclusive")
-        }
-            
-        # Dict chứa cột bắt buộc phải có (chỉ sử dụng các cột này)
-        self.col_use = {
-            col for dict_data in config_data.values() 
-            for col in dict_data["raw_name"]
-        }
-
-        # Từ điển đổi tên cột
-        self.rename_dict = {
-            raw_name: new_col_name 
-            for new_col_name, data in config_data.items()
-            for raw_name in data["raw_name"] 
-        }
-
-        # Từ điển đổi dtype
-        self.dtype_dict = {col: dict_data["dtype"] for col, dict_data in config_data.items()}
+        self.config_data = ConfigLoader(config_path=Path(r"configs/sales_data_config.json"))
         
     def read_excel(self, file_path_list: list):
         """
@@ -81,9 +40,9 @@ class SalesDataProcessor:
                         has_missing_col = False # Đánh dấu file có thiếu cột không
                         raw_col_list = pd.read_excel(file, nrows=0).columns.tolist() # Lấy tên cột có trong file gốc
 
-                        for col_name, raw_col_name_list in self.col_req_dict.items():
+                        for col_name, raw_col_name_list in self.config_data.col_req_dict.items():
                             # Trường hợp thiếu cột không nằm trong loại file order / ar_invoice
-                            col_exclusive_compare = self.col_exclusive_dict.get(col_name)
+                            col_exclusive_compare = self.config_data.col_exclusive_dict.get(col_name)
                             if col_exclusive_compare and col_exclusive_compare != file_type:
                                 continue
                             
@@ -103,19 +62,19 @@ class SalesDataProcessor:
                         print("Đã map đủ tất cả các cột bắt buộc!")
                         df: pd.DataFrame = pd.read_excel(
                             file,
-                            usecols=[col for col in self.col_use if col in raw_col_list], 
+                            usecols=[col for col in self.config_data.col_use if col in raw_col_list], 
                             dtype="string", 
                             engine="openpyxl"
                         )
 
                         # Đổi tên cột
-                        df = df.rename(columns=self.rename_dict)
+                        df = df.rename(columns=self.config_data.rename_dict)
 
                         # Drop dòng trống
                         df = df.dropna(subset=['business_partner_code'])
 
                         # Chuyển định dạng
-                        for col, dtype in self.dtype_dict.items():
+                        for col, dtype in self.config_data.dtype_dict.items():
                             if col in df.columns:
                                 if dtype == "numeric":
                                     df[col] = pd.to_numeric(df[col], errors="coerce")
@@ -221,41 +180,7 @@ class SalesDataProcessor:
 class ProfitAndLossProcessor:
     def __init__(self, engine):
         self.engine = engine
-        self.rename_dict = {}
-        self.dtype_dict = None
-        self.col_req_dict = None
-
-        self.config_loader()
-    
-    def config_loader(self):
-        """
-        Đọc file config và trích xuất thông tin cần thiết
-        """
-        
-        with open('configs/pl_data_config.json', encoding="utf-8") as config_file:
-            config_data: dict = json.load(config_file)
-        
-        # Dict dùng để phát hiện cột chưa được map trong file dữ liệu thô
-        self.col_req_dict = {
-            col_name: data["raw_name"]
-            for col_name, data in config_data.items()
-        }
-
-        # Dict chứa cột bắt buộc phải có (chỉ sử dụng các cột này)
-        self.col_use = {
-            col for dict_data in config_data.values() 
-            for col in dict_data["raw_name"]
-        }
-
-        # Từ điển đổi tên cột
-        self.rename_dict = {
-            raw_name: new_col_name 
-            for new_col_name, data in config_data.items()
-            for raw_name in data["raw_name"] 
-        }
-
-        # Từ điển đổi dtype
-        self.dtype_dict = {col: dict_data["dtype"] for col, dict_data in config_data.items()}
+        self.config_data = ConfigLoader("configs/pl_data_config.json")
 
     def read_excel(self, file_path_list):
 
@@ -276,7 +201,7 @@ class ProfitAndLossProcessor:
                         has_missing_col = False # Đánh dấu file có thiếu cột không
                         raw_col_list = pd.read_excel(file, nrows=0).columns.tolist() # Lấy tên cột có trong file gốc
 
-                        for col_name, raw_col_name_list in self.col_req_dict.items():
+                        for col_name, raw_col_name_list in self.config_data.col_req_dict.items():
                             
                             # Trường hợp không tìm thấy cột nào được map với tên cột trong file gốc
                             if not any(col in raw_col_name_list for col in raw_col_list): 
@@ -294,13 +219,13 @@ class ProfitAndLossProcessor:
                         print("Đã map đủ tất cả các cột bắt buộc!")
                         df: pd.DataFrame = pd.read_excel(
                             file,
-                            usecols=[col for col in self.col_use if col in raw_col_list], 
+                            usecols=[col for col in self.config_data.col_use if col in raw_col_list], 
                             dtype="string", 
                             engine="openpyxl"
                         )
 
                         # Đổi tên cột
-                        df = df.rename(columns=self.rename_dict)
+                        df = df.rename(columns=self.config_data.rename_dict)
 
                         # Drop dòng trống
                         df = df.dropna(subset=['business_partner_code'])
@@ -311,7 +236,7 @@ class ProfitAndLossProcessor:
                         df["date"] = pd.to_datetime(df["date"], errors="coerce", format="%d.%m.%Y")
 
                         # Chuyển định dạng
-                        for col, dtype in self.dtype_dict.items():
+                        for col, dtype in self.config_data.dtype_dict.items():
                             if col in df.columns:
                                 if dtype == "numeric":
                                     df[col] = pd.to_numeric(df[col], errors="coerce")
