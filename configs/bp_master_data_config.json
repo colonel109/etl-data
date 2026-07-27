@@ -1,0 +1,22 @@
+{
+    "business_partner_code": {
+        "raw_name": ["BP Code"],
+        "dtype": "string"
+    },
+    "business_partner_name": {
+        "raw_name": ["BP Name"],
+        "dtype": "string"
+    },
+    "bill_to_street": {
+        "raw_name": ["Bill-to Street"],
+        "dtype": "string"
+    },
+    "ship_to_street": {
+        "raw_name": ["Ship-to Street"],
+        "dtype": "string"
+    },
+    "creation_date": {
+        "raw_name": ["Creation Date"],
+        "dtype": "date"
+    }
+} 
