@@ -1,4 +1,3 @@
-import json
 import pandas as pd
 from pathlib import Path
 from sqlalchemy import text
@@ -180,7 +179,7 @@ class SalesDataProcessor:
 class ProfitAndLossProcessor:
     def __init__(self, engine):
         self.engine = engine
-        self.config_data = ConfigLoader("configs/pl_data_config.json")
+        self.config_data = ConfigLoader(r"configs/pl_data_config.json")
 
     def read_excel(self, file_path_list):
 
@@ -327,8 +326,8 @@ class ProfitAndLossProcessor:
             )
             SELECT
                 COALESCE(pc.profit_center_key, 0) AS profit_center_key,
-                COALESCE(bp.business_partner_key, 0) AS business_partner_key,
-                COALESCE(p.product_key, 0) AS product_key,
+                bp.business_partner_key,
+                p.product_key,
                 pal.date,
                 COALESCE(pal.a_non_operating_expenses, 0) AS a_non_operating_expenses,
                 COALESCE(pal.a_non_operating_income, 0) AS a_non_operating_income,
@@ -390,7 +389,9 @@ class ProfitAndLossProcessor:
                 COALESCE(pal.water_lighting_s, 0) AS water_lighting_s
             FROM staging.profit_and_loss pal
             LEFT JOIN main.profit_center pc USING (profit_center_code)
-            LEFT JOIN main.business_partner bp USING (business_partner_code)
+            LEFT JOIN main.business_partner bp
+                ON pal.business_partner_code = bp.business_partner_code 
+                AND (pal.date >= bp.valid_from AND (pal.date <= bp.valid_to OR bp.valid_to IS NULL))
             LEFT JOIN main.product p USING (product_code);
             """
             )
