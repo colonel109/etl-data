@@ -6,12 +6,20 @@ from shutil import copy
 
 
 class ExcelRefresher:
+    """
+    Mở và làm mới dữ liệu trong các file mẫu (template_report) sau đó đổi tên và di chuyển sang thư mục kết quả (refreshed_report)
+    """
+    
     def __init__(self, report_folder: Path):
-        self.selected_report = None
+        self.selected_report = None # Lưu trữ các path của các report được chọn để làm mới dữ liệu
         self.template_path = Path(report_folder / "template_report") # Thư mục chứa file mẫu
-        self.result_path = Path(report_folder / "refreshed_report") # Thư mục chứa file kết quả sau khi refresh
+        self.result_path = Path(report_folder / "refreshed_report") # Thư mục chứa file kết quả sau khi refresh file mẫu
     
     def file_selector(self):
+        """
+        Chọn các file template, trả về một list các đường dẫn 
+        """
+        
         self.selected_report = questionary.checkbox(
             "Chọn báo cáo cần refresh dữ liệu",
             choices = [str(file) for file in self.template_path.glob("*.xlsx")]
@@ -31,6 +39,10 @@ class ExcelRefresher:
                         rf.unlink()
 
     def process_file(self):
+        """
+        Làm mới dữ liệu, đổi tên file theo ngày, giờ và di chuyển đến thư mục kết quả
+        """
+        
         excel = win32.DispatchEx("Excel.Application")
         excel.Visible = False 
         excel.Visible = False
@@ -56,22 +68,19 @@ class ExcelRefresher:
                 wb.RefreshAll()
 
                 excel.CalculateUntilAsyncQueriesDone()
-                print("Làm mới dữ liệu thành công!")
                 wb.Save()
-                
-                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+
+                # Lưu file với tên mới
+                timestamp = datetime.now().strftime("%Y.%m.%d_%H.%M.%S")
 
                 dst = self.result_path / f"({timestamp}) {file_path.stem}{file_path.suffix}"
-
                 copy(file_path, dst)
+                print("Làm mới dữ liệu thành công!")
 
             except Exception as e:
-                print(e)
+                print(f"Xảy ra lỗi khi làm mới file: {e}")
                 wb.Close()
-
-            wb.Close()
-
-            # Xoá dữ liệu cũ trong file
+                continue
         
         excel.Quit()
 
