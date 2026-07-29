@@ -5,7 +5,7 @@ from datetime import datetime
 from shutil import copy 
 
 
-class ExcelRefresher:
+class ReportRefresher:
     """
     Mở và làm mới dữ liệu trong các file mẫu (template_report) sau đó đổi tên và di chuyển sang thư mục kết quả (refreshed_report)
     """
@@ -14,6 +14,8 @@ class ExcelRefresher:
         self.selected_report = None # Lưu trữ các path của các report được chọn để làm mới dữ liệu
         self.template_path = Path(report_folder / "template_report") # Thư mục chứa file mẫu
         self.result_path = Path(report_folder / "refreshed_report") # Thư mục chứa file kết quả sau khi refresh file mẫu
+       
+        self.file_selector() 
     
     def file_selector(self):
         """
@@ -83,8 +85,3 @@ class ExcelRefresher:
                 continue
         
         excel.Quit()
-
-
-refresher = ExcelRefresher(report_folder=Path(r"D:\Projects\etl-data\reports"))
-refresher.file_selector()
-refresher.process_file()
