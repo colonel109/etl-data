@@ -70,7 +70,7 @@ class PipelineSelector:
     
     def select_file(self, path: list | Path):
         """
-        Lấy các path của các file được chọn từ danh sách folder được truyển vào
+        Lấy các path của các file được chọn từ danh sách folder được truyển vào, trả về danh sách các file được trích xuất
         """
         
         selected_files = []
