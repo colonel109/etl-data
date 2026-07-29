@@ -124,6 +124,9 @@ class MainPipeline:
                 target_schema="main",
                 target_view="view_unpivoted_transactions"
             )
+        
+        # Prompt làm mới dữ liệu các file report sau khi hoàn thành xử lí dữ liệu
+        self.report_refresher.run_process()
 
 
 BASE_PATH = Path().cwd()

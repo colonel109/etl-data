@@ -35,13 +35,14 @@ class ReportRefresher:
             return
         
         # Lấy danh sách các file đã tạo trước đó trong thư mục result
-        selected_file_name = [Path(file).stem for file in self.selected_report]
+        selected_file_name = [Path(file).stem for file in selected_report]
         refreshed_file_name = [file for file in self.result_path.glob("*")]
 
         if refreshed_file_name:
             for f in selected_file_name:
                 for rf in refreshed_file_name:
                     if f in rf.stem:
+                        print("Tìm thấy báo cáo cũ, đang xoá...")
                         rf.unlink()
         
         return selected_report
