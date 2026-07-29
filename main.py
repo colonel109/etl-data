@@ -5,10 +5,12 @@ from src.database.controller import DatabaseController
 from src.data_inspector import DebugViewInspector
 from src.helper.result_writer import ResultWriter
 from src.pipeline_selector import PipelineSelector
+from src.report_refresher import ReportRefresher
+import questionary
 
 
 class MainPipeline:
-    def __init__(self, base_path, data_path, engine):
+    def __init__(self, base_path: Path, data_path: Path, report_path: Path, engine):
         self.base_path = base_path
         self.engine = engine
         self.database_controller = DatabaseController(self.engine)
@@ -17,7 +19,21 @@ class MainPipeline:
         self.pl_data_processor = ProfitAndLossProcessor(self.engine)
         self.result_writer = ResultWriter(base_path)
         self.pipeline = PipelineSelector(data_path)
+        self.report_refresher = ReportRefresher(report_path)
+    
+    def main_process(self):
+        selected_task = questionary.select(
+            "Chọn task:",
+            choices=["Xử lí dữ liệu đơn hàng", "Làm mới dữ liệu báo cáo"]
+        ).ask()
 
+        if selected_task == "Xử lí dữ liệu đơn hàng":
+            self.process_data()
+        elif selected_task == "Làm mới dữ liệu báo cáo":
+            self.report_refresher.run_process()
+        else:
+            return
+        
     def process_data(self):
         """
         Chọn file, xử lí dữ liệu, import vào database và làm mới dữ liệu của view theo từng pipeline
@@ -62,7 +78,7 @@ class MainPipeline:
                 print("Thiếu thông tin, vui lòng cập nhật")
                 self.result_writer.write_result(data_list=result)
                 return 
-            
+
             # Copy dữ liệu từ staging vào bảng đích (daily và monthy đối với dữ liệu bán hàng)
             self.sales_data_processor.copy_to_main_table(target_table)
 
@@ -112,12 +128,14 @@ class MainPipeline:
 
 BASE_PATH = Path().cwd()
 DATA_PATH = BASE_PATH / "data"
+REPORT_PATH = BASE_PATH / "reports"
 
 if __name__ == "__main__":    
     main_pipeline = MainPipeline(
         base_path=BASE_PATH,
         data_path=DATA_PATH,
+        report_path=REPORT_PATH,
         engine=create_engine("postgresql+psycopg://postgres:duong1234@localhost:5432/daesang_db_test")
     )
 
-    main_pipeline.process_data()
+    main_pipeline.main_process()
