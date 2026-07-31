@@ -401,7 +401,8 @@ class ProfitAndLossProcessor:
 
 
 class BusinessPartnerUpdater:
-    def __init__(self, folder_path: Path):
+    def __init__(self, engine, folder_path: Path):
+        self.engine = engine
         self.data_folder = folder_path / "business_partner_data"
         self.config_data= ConfigLoader(r"configs/list_of_bp_config.json")
     
@@ -460,3 +461,18 @@ class BusinessPartnerUpdater:
                     df[col] = pd.to_datetime(df[col], format="%d.%m.%Y")
         
         return df, has_error
+    
+    def update_data(self):
+        query = text(
+            """
+            UPDATE main.business_partner bp
+            SET (creation_date, ship_to_street, bill_to_street) = (bps.creation_date, bps.ship_to_street, bps.bill_to_street)
+            FROM staging.business_partner bps 
+            WHERE bp.business_partner_code = bps.business_partner_code
+        """
+        )
+
+        with self.engine.begin() as conn:
+            conn.execute(query)
+        
+        print("Cập nhật dữ liệu thành công!")

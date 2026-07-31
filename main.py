@@ -20,7 +20,7 @@ class MainPipeline:
         self.result_writer = ResultWriter(base_path)
         self.pipeline = PipelineSelector(data_path)
         self.report_refresher = ReportRefresher(report_path)
-        self.bp_updater = BusinessPartnerUpdater(data_path)
+        self.bp_updater = BusinessPartnerUpdater(folder_path=data_path, engine=self.engine)
     
     def main_process(self):
         choices_list = ["Xử lí dữ liệu đơn hàng", "Làm mới dữ liệu báo cáo", "Cập nhật dữ liệu khách hàng"]
@@ -147,6 +147,8 @@ class MainPipeline:
             table_name="business_partner", 
             schema="staging"
         )
+
+        self.bp_updater.update_data()
 
 
 BASE_PATH = Path().cwd()
