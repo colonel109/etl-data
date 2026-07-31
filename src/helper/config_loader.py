@@ -15,22 +15,31 @@ class ConfigLoader:
         self.config_loader()
 
     def config_loader(self):
-
+        """
+        Đọc dữ liệu từ biến config_data và truyền vào các biến lưu trữ
+        """
+       
+        # Trả về dict tên cột chuẩn hoá và tên cột gốc 
+        # dạng {"tên cột chuẩn hoá": "tên cột gốc"}
         self.col_req_dict = {
             col_name: data["raw_name"]
             for col_name, data in self.config_data.items()
         }
 
+        # Trả về dict dạng {"tên cột chuẩn hoá": "true/false"}
         self.col_exclusive_dict = {
             col_name: data["exclusive"]
             for col_name, data in self.config_data.items() if data.get("exclusive")
         }
             
+        # Trả về set chứa các raw name của các cột, vì trong 1 file sẽ không có 2 cột trùng nhau nên
+        # có thể gom tất cả lại
         self.col_use = {
             col for dict_data in self.config_data.values() 
             for col in dict_data["raw_name"]
         }
 
+        # Trả về dict có dạng {"tên cột gốc": "tên cột chuẩn hoá"}
         self.rename_dict = {
             raw_name: new_col_name 
             for new_col_name, data in self.config_data.items()

@@ -9,7 +9,7 @@ class ResultWriter:
     def __init__(self, base_path):
         self.base_path: Path = base_path
 
-    def write_result(self, data_list=None, data_single=None):
+    def write_result(self, data_list: dict=None, data_single: dict=None):
         """
         Hàm này phụ trách viết file excel từ dữ liệu được nhập vào
         - data_list: list các từ điển có dạng [{tên sheet: dataframe}, ....]

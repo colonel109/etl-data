@@ -13,7 +13,7 @@ class SalesDataProcessor:
 
     def __init__(self, engine):
         self.engine = engine
-        self.config_data = ConfigLoader(config_path=Path(r"configs/sales_data_config.json"))
+        self.config_data = ConfigLoader(r"configs/sales_data_config.json")
         
     def read_excel(self, file_path_list: list):
         """
@@ -398,3 +398,65 @@ class ProfitAndLossProcessor:
 
         with self.engine.begin() as conn:
             conn.execute(query)
+
+
+class BusinessPartnerUpdater:
+    def __init__(self, folder_path: Path):
+        self.data_folder = folder_path / "business_partner_data"
+        self.config_data= ConfigLoader(r"configs/list_of_bp_config.json")
+    
+    def check_file(self):
+        """
+        Kiểm tra việc folder chỉ có đúng 1 duy nhất file thông tin khách hàng, trả về path của file nếu thoả mãn điều kiện 1 file duy nhất
+        """
+        file_list = [file for file in self.data_folder.glob("*.xlsx")] 
+        if not len(file_list) == 1:
+            print(f"Phát hiện {len(file_list)} trong thư mục, vui lòng chỉ lấy duy nhất 1 file")
+            return
+        
+        return file_list[0]
+    
+    def read_data(self):
+        """
+        Đọc file dữ liệu khách hàng
+        """
+        file = self.check_file()
+        has_error = False 
+        raw_col_list = pd.read_excel(file, nrows=0).columns.tolist() # Lấy tên cột có trong file gốc
+        not_mapped_columns = [] # Biến lưu trữ các cột chưa được map raw name
+
+        for col_name, raw_col_name_list in self.config_data.col_req_dict.items():
+            
+            # Trường hợp không tìm thấy cột nào được map với tên cột trong file gốc
+            if not any(col in raw_col_name_list for col in raw_col_list): 
+                not_mapped_info = {
+                    "Tên file ": file.stem,
+                    "Tên cột chưa map": col_name
+                }
+                not_mapped_columns.append(not_mapped_info)
+                has_error = True
+        
+        if has_error:
+            return not_mapped_columns, has_error
+
+        print("Đã map đủ tất cả các cột bắt buộc!")
+        df: pd.DataFrame = pd.read_excel(
+            file,
+            usecols=[col for col in self.config_data.col_use if col in raw_col_list], 
+            dtype="string", 
+            engine="openpyxl"
+        )
+
+        # Đổi tên cột
+        df = df.rename(columns=self.config_data.rename_dict)
+    
+        # Drop dòng không đạt
+        df = df.dropna(subset=['business_partner_code'])
+
+        # Chuyển đổi định dạng
+        for col, dtype in self.config_data.dtype_dict.items():
+            if col in df.columns:
+                if dtype == "date":
+                    df[col] = pd.to_datetime(df[col], format="%d.%m.%Y")
+        
+        return df, has_error

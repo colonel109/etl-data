@@ -12,7 +12,7 @@ class Base(DeclarativeBase):
     pass
 
 
-class sell_type_staging(Base):
+class SellTypeStaging(Base):
     __tablename__ = "sell_type_staging"
     __table_args__ = {"schema": "staging"}
 
@@ -815,3 +815,32 @@ class ProfitAndLoss(Base):
     travelling_s: Mapped[Optional[Decimal]] = mapped_column(Numeric)
     water_lighting_a: Mapped[Optional[Decimal]] = mapped_column(Numeric)
     water_lighting_s: Mapped[Optional[Decimal]] = mapped_column(Numeric)
+    
+    
+class TeamStaging(Base):
+    __tablename__ = "team_staging"
+    __table_args__ = {"schema": "staging"}
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    raw_value: Mapped[str] = mapped_column(String, unique=True)
+    team_key: Mapped[int] = mapped_column(
+        ForeignKey("main.team.team_key")
+    )
+
+
+class BusinessPartnerStaging(Base):
+    __tablename__ = "business_partner"
+    __table_args__ = {"schema": "staging"}
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    import_date: Mapped[datetime.datetime] = mapped_column(
+        DateTime, server_default=func.now()
+    )
+    business_partner_code: Mapped[str] = mapped_column(String, unique=True)
+    business_partner_name: Mapped[str] = mapped_column(String)
+    team_name: Mapped[Optional[str]] = mapped_column(String)
+    branch_name: Mapped[Optional[str]] = mapped_column(String)
+    bill_to_street: Mapped[Optional[str]] = mapped_column(String)
+    ship_to_street: Mapped[Optional[str]] = mapped_column(String)
+    province_name: Mapped[Optional[str]] = mapped_column(String)
+    creation_date: Mapped[datetime.date] = mapped_column(Date)

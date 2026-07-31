@@ -7,12 +7,24 @@
         "raw_name": ["BP Name"],
         "dtype": "string"
     },
+    "team_name":{
+        "raw_name": ["Team Name"],
+        "dtype": "string"
+    },
+    "branch_name":{
+        "raw_name": ["Branch Name"],
+        "dtype": "string"
+    },
     "bill_to_street": {
         "raw_name": ["Bill-to Street"],
         "dtype": "string"
     },
     "ship_to_street": {
         "raw_name": ["Ship-to Street"],
+        "dtype": "string"
+    },
+    "province_name": {
+        "raw_name": ["Territory"],
         "dtype": "string"
     },
     "creation_date": {

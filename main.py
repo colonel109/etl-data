@@ -1,6 +1,6 @@
 from pathlib import Path
 from sqlalchemy import create_engine
-from src.data_processor import SalesDataProcessor, ProfitAndLossProcessor
+from src.data_processor import SalesDataProcessor, ProfitAndLossProcessor, BusinessPartnerUpdater
 from src.database.controller import DatabaseController
 from src.data_inspector import DebugViewInspector
 from src.helper.result_writer import ResultWriter
@@ -20,17 +20,21 @@ class MainPipeline:
         self.result_writer = ResultWriter(base_path)
         self.pipeline = PipelineSelector(data_path)
         self.report_refresher = ReportRefresher(report_path)
+        self.bp_updater = BusinessPartnerUpdater(data_path)
     
     def main_process(self):
+        choices_list = ["Xử lí dữ liệu đơn hàng", "Làm mới dữ liệu báo cáo", "Cập nhật dữ liệu khách hàng"]
         selected_task = questionary.select(
             "Chọn task:",
-            choices=["Xử lí dữ liệu đơn hàng", "Làm mới dữ liệu báo cáo"]
+            choices=choices_list
         ).ask()
 
-        if selected_task == "Xử lí dữ liệu đơn hàng":
+        if selected_task == choices_list[0]:
             self.process_data()
-        elif selected_task == "Làm mới dữ liệu báo cáo":
+        elif selected_task == choices_list[1]:
             self.report_refresher.run_process()
+        elif selected_task == choices_list[2]:
+            self.update_bp_data()
         else:
             return
         
@@ -114,7 +118,7 @@ class MainPipeline:
             if has_error:
                 print("Thiếu thông tin, vui lòng cập nhật")
                 self.result_writer.write_result(data_list=result)
-                return 
+                return
             
             # Copy dữ liệu từ staging vào bảng chính, đối với pl chỉ có 1 bảng đích
             self.pl_data_processor.copy_to_main_table()
@@ -127,6 +131,22 @@ class MainPipeline:
         
         # Prompt làm mới dữ liệu các file report sau khi hoàn thành xử lí dữ liệu
         self.report_refresher.run_process()
+        
+    def update_bp_data(self):
+        result, has_error = self.bp_updater.read_data()
+        if has_error:
+            self.result_writer.write_result(data_list=result)
+
+        self.database_controller.truncate_table(
+            target_table="business_partner", 
+            target_schema="staging"
+        )
+
+        self.database_controller.insert_dataframe(
+            df=result,
+            table_name="business_partner", 
+            schema="staging"
+        )
 
 
 BASE_PATH = Path().cwd()
