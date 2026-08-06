@@ -124,10 +124,12 @@ class MainPipeline:
             self.pl_data_processor.copy_to_main_table()
 
             # Làm mới dữ liệu của view
-            self.database_controller.refresh_view(
-                target_schema="main",
-                target_view="view_unpivoted_transactions"
-            )
+            view_to_refresh = ["view_unpivoted_transactions", "view_pl_unpivoted"]
+            for view in view_to_refresh:
+                self.database_controller.refresh_view(
+                    target_schema="main",
+                    target_view=view
+                )
         
         # Prompt làm mới dữ liệu các file report sau khi hoàn thành xử lí dữ liệu
         self.report_refresher.run_process()
