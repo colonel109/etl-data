@@ -125,7 +125,7 @@ class SalesDataProcessor:
                 weight, uom_per_quantity, uom_quantity,
                 quantity, quantity_packaging_uom, box,
                 base_price, discount_percent, discounted_price,
-                discounted_price_tax, sales_revenue, sales_amount_fc,
+                discounted_price_tax, sales_amount, sales_amount_fc,
                 tax_amount, tax_amount_fc, sales_amount_tax,
                 sales_amount_fc_tax, return_quantity
             )
@@ -150,7 +150,7 @@ class SalesDataProcessor:
                 t.quantity_packaging_uom, t.box,
                 t.base_price, t.discount_percent,
                 t.discounted_price, t.discounted_price_tax,
-                t.sales_revenue, t.sales_amount_fc,
+                t.sales_amount, t.sales_amount_fc,
                 t.tax_amount, t.tax_amount_fc,
                 t.sales_amount_tax, t.sales_amount_fc_tax,
                 t.return_quantity

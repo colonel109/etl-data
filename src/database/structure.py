@@ -149,7 +149,7 @@ class TransactionsStaging(Base):
     discount_percent: Mapped[Optional[Decimal]] = mapped_column(Numeric)
     discounted_price: Mapped[Optional[Decimal]] = mapped_column(Numeric)
     discounted_price_tax: Mapped[Optional[Decimal]] = mapped_column(Numeric)
-    sales_revenue: Mapped[Optional[Decimal]] = mapped_column(Numeric)
+    sales_amount: Mapped[Optional[Decimal]] = mapped_column(Numeric)
     sales_amount_fc: Mapped[Optional[Decimal]] = mapped_column(Numeric)
     tax_amount: Mapped[Optional[Decimal]] = mapped_column(Numeric)
     tax_amount_fc: Mapped[Optional[Decimal]] = mapped_column(Numeric)
@@ -351,6 +351,7 @@ class Warehouse(Base):
     warehouse_code: Mapped[str] = mapped_column(String, unique=True)
     warehouse_name: Mapped[str] = mapped_column(String)
 
+    province: Mapped[List["Province"]] = relationship(back_populates="warehouse")
 
 class Province(Base):
     __tablename__ = "province"
@@ -555,7 +556,7 @@ class Transactions(Base):
     discount_percent: Mapped[Optional[Decimal]] = mapped_column(Numeric)
     discounted_price: Mapped[Optional[Decimal]] = mapped_column(Numeric)
     discounted_price_tax: Mapped[Optional[Decimal]] = mapped_column(Numeric)
-    sales_revenue: Mapped[Optional[Decimal]] = mapped_column(Numeric)
+    sales_amount: Mapped[Optional[Decimal]] = mapped_column(Numeric)
     sales_amount_fc: Mapped[Optional[Decimal]] = mapped_column(Numeric)
     tax_amount: Mapped[Optional[Decimal]] = mapped_column(Numeric)
     tax_amount_fc: Mapped[Optional[Decimal]] = mapped_column(Numeric)
@@ -639,7 +640,7 @@ class TransactionsDaily(Base):
     discount_percent: Mapped[Optional[Decimal]] = mapped_column(Numeric)
     discounted_price: Mapped[Optional[Decimal]] = mapped_column(Numeric)
     discounted_price_tax: Mapped[Optional[Decimal]] = mapped_column(Numeric)
-    sales_revenue: Mapped[Optional[Decimal]] = mapped_column(Numeric)
+    sales_amount: Mapped[Optional[Decimal]] = mapped_column(Numeric)
     sales_amount_fc: Mapped[Optional[Decimal]] = mapped_column(Numeric)
     tax_amount: Mapped[Optional[Decimal]] = mapped_column(Numeric)
     tax_amount_fc: Mapped[Optional[Decimal]] = mapped_column(Numeric)

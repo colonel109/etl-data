@@ -165,7 +165,7 @@
     "dtype": "numeric",
     "exclusive": "ar_invoice"
   },
-  "sales_revenue": {
+  "sales_amount": {
     "raw_name": ["Total", "LINETOTAL"],
     "dtype": "numeric"
   },
