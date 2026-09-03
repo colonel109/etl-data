@@ -38,6 +38,6 @@ class ResultWriter:
                         index=False
                     )
         
-        excel = win32.gencache.EnsureDispatch('Excel.Application')
+        excel = win32.Dispatch('Excel.Application')
         excel.Visible = True
         excel.Workbooks.Open(str(result_file_path))
