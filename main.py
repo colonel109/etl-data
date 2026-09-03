@@ -26,7 +26,8 @@ class MainPipeline:
         choices_list = ["Xử lí dữ liệu đơn hàng", "Làm mới dữ liệu báo cáo", "Cập nhật dữ liệu khách hàng"]
         selected_task = questionary.select(
             "Chọn task:",
-            choices=choices_list
+            choices=choices_list,
+            default="Xử lí dữ liệu đơn hàng"
         ).ask()
 
         if selected_task == choices_list[0]:
@@ -89,7 +90,7 @@ class MainPipeline:
             # Làm mới dữ liệu của view
             self.database_controller.refresh_view(
                 target_schema="main",
-                target_view="view_unpivoted_transactions"
+                target_view="view_transactions"
             )
         
         elif selected_pipeline == "profit_and_loss":
@@ -124,7 +125,7 @@ class MainPipeline:
             self.pl_data_processor.copy_to_main_table()
 
             # Làm mới dữ liệu của view
-            view_to_refresh = ["view_unpivoted_transactions", "view_pl_unpivoted"]
+            view_to_refresh = ["view_pl_normalized"]
             for view in view_to_refresh:
                 self.database_controller.refresh_view(
                     target_schema="main",

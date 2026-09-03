@@ -18,8 +18,8 @@ class PipelineSelector:
         pipeline = {
             "Dữ liệu bán hàng": {
                 "sales": {
-                    "Dữ liệu tháng": {"AR Invoice": "ar_invoice", "Order": "order"},
-                    "Dữ liệu ngày": "daily"
+                    "Dữ liệu ngày": "daily",
+                    "Dữ liệu tháng": {"AR Invoice": "ar_invoice", "Order": "order"}
                 }
             },
             "Dữ liệu lỗ lãi": "profit_and_loss",
@@ -28,7 +28,8 @@ class PipelineSelector:
         # Lựa chọn pipeline
         pipeline_select = questionary.select(
             "Chọn pipeline cần xử lí:",
-            choices=list(pipeline.keys())
+            choices=list(pipeline.keys()),
+            default="Dữ liệu bán hàng"
         ).ask()
 
         selected_pipeline = pipeline[pipeline_select]
@@ -46,7 +47,8 @@ class PipelineSelector:
             report_type_dict = selected_pipeline["sales"]
             sales_type = questionary.select(
                 "Chọn loại bảng cần import:",
-                choices=list(report_type_dict.keys())
+                choices=list(report_type_dict.keys()),
+                default="Dữ liệu ngày"
             ).ask()
 
             file_type_dict = report_type_dict[sales_type]
