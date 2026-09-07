@@ -56,7 +56,17 @@ class ReportRefresher:
         """
         Làm mới dữ liệu, đổi tên file theo ngày, giờ và di chuyển đến thư mục kết quả
         """
-        
+        promt_pl_data = questionary.select(
+            "Bạn có muốn làm mới cả dữ liệu lỗ lãi (nếu có)?",
+            choices=["Không", "Có"],
+            default="Không"
+        ).ask()
+
+        if promt_pl_data == "Không":
+            refresh_all = False
+        elif promt_pl_data == "Có":
+            refresh_all = True
+
         excel = win32.DispatchEx("Excel.Application")
         excel.Visible = False 
         excel.Visible = False
@@ -64,7 +74,7 @@ class ReportRefresher:
         excel.ScreenUpdating = False
         excel.EnableEvents = False
         excel.AskToUpdateLinks = False
-
+    
         for path in selected_paths:
             file_path = Path(path)
             file_name = file_path.stem
@@ -76,26 +86,28 @@ class ReportRefresher:
             print(f"Đang làm mới báo cáo: {file_name}")
 
             # Làm mới dữ liệu
-            try:
-                wb = excel.Workbooks.Open(str(file_path))            
+            wb = excel.Workbooks.Open(str(file_path))            
+            time.sleep(3)
 
-                time.sleep(3)  
-
+            if not refresh_all: 
+                excluded_query = "pl_data"
+                for query in wb.Connections:
+                    if not excluded_query in query.Name:
+                        print(f"Đang làm mới bảng: {query.Name}")
+                        query.Refresh()
+            else:
+                print("Đang làm mới toàn bộ dữ liệu")
                 wb.RefreshAll()
-
                 excel.CalculateUntilAsyncQueriesDone()
-                wb.Save()
 
-                # Lưu file với tên mới
-                timestamp = datetime.now().strftime("%d.%m.%Y_%H.%M.%S")
+            wb.Save()
+            wb.Close()
 
-                dst = self.result_path / f"({timestamp}) {file_name}{file_path.suffix}"
-                copy(file_path, dst)
-                print("Làm mới dữ liệu thành công!")
+            # Lưu file với tên mới
+            timestamp = datetime.now().strftime("%d.%m.%Y_%H.%M.%S")
 
-            except Exception as e:
-                print(f"Xảy ra lỗi khi làm mới file: {e}")
-                wb.Close()
-                continue
+            dst = self.result_path / f"({timestamp}) {file_name}{file_path.suffix}"
+            copy(file_path, dst)
+            print("Làm mới dữ liệu thành công!")
         
         excel.Quit()
