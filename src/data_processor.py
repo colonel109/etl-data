@@ -127,7 +127,7 @@ class SalesDataProcessor:
                 base_price, discount_percent, discounted_price,
                 discounted_price_tax, sales_amount, sales_amount_fc,
                 tax_amount, tax_amount_fc, sales_amount_tax,
-                sales_amount_fc_tax, return_quantity
+                sales_amount_fc_tax, return_quantity, remark
             )
             SELECT
                 business_partner_key,
@@ -153,7 +153,8 @@ class SalesDataProcessor:
                 t.sales_amount, t.sales_amount_fc,
                 t.tax_amount, t.tax_amount_fc,
                 t.sales_amount_tax, t.sales_amount_fc_tax,
-                t.return_quantity
+                t.return_quantity,
+                t.remark
             FROM staging.transactions t
             JOIN main.business_partner bp 
                 ON t.business_partner_code = bp.business_partner_code 
