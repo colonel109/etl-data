@@ -163,7 +163,7 @@ if __name__ == "__main__":
         base_path=BASE_PATH,
         data_path=DATA_PATH,
         report_path=REPORT_PATH,
-        engine=create_engine("postgresql+psycopg://postgres:duong1234@localhost:5432/daesang_db_test")
+        engine=create_engine("postgresql+psycopg://postgres:duong1234@localhost:5432/daesang_db_main")
     )
 
     main_pipeline.main_process()
