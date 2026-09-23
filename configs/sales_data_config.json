@@ -66,6 +66,10 @@
     "raw_name": ["Selling Type", "Sell Type", "SALETYPE"],
     "dtype": "string"
   },
+  "order_type_name": {
+    "raw_name": ["Order Type", "U_SDTP"],
+    "dtype": "string"
+  },
   "cost_center_code": {
     "raw_name": ["Cost Center", "COSTCD"],
     "dtype": "string"

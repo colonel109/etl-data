@@ -127,7 +127,7 @@ class SalesDataProcessor:
                 base_price, discount_percent, discounted_price,
                 discounted_price_tax, sales_amount, sales_amount_fc,
                 tax_amount, tax_amount_fc, sales_amount_tax,
-                sales_amount_fc_tax, return_quantity, remark
+                sales_amount_fc_tax, return_quantity, remark, order_type_key
             )
             SELECT
                 business_partner_key,
@@ -154,8 +154,9 @@ class SalesDataProcessor:
                 t.tax_amount, t.tax_amount_fc,
                 t.sales_amount_tax, t.sales_amount_fc_tax,
                 t.return_quantity,
-                t.remark
-            FROM staging.transactions t
+                t.remark,
+                COALESCE(ots.order_type_key, 0) AS order_type_key
+            FROM staging.transactions_staging t
             JOIN main.business_partner bp 
                 ON t.business_partner_code = bp.business_partner_code 
             AND (t.posting_date >= bp.valid_from AND (t.posting_date <= bp.valid_to OR bp.valid_to IS NULL))
@@ -169,7 +170,8 @@ class SalesDataProcessor:
             LEFT JOIN staging.warehouse_staging ws ON t.warehouse_code = ws.raw_value
             LEFT JOIN staging.return_type_staging rts ON t.return_type_code = rts.raw_value
             LEFT JOIN staging.uom_staging us ON t.uom_name = us.raw_value
-            LEFT JOIN staging.tax_staging ts ON t.tax_code = ts.raw_value;
+            LEFT JOIN staging.tax_staging ts ON t.tax_code = ts.raw_value
+            LEFT JOIN staging.order_type_staging ots ON t.order_type_name = ots.raw_value
             """
             )
 
