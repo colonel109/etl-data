@@ -60,7 +60,7 @@ class MainPipeline:
             
             # Xoá dữ liệu cũ ở bảng transactions staging
             self.database_controller.truncate_table(
-                target_table="transactions",
+                target_table="transactions_staging",
                 target_schema="staging"
             )
 
@@ -73,7 +73,7 @@ class MainPipeline:
             # Insert data vào staging
             self.database_controller.insert_dataframe(
                 df=result,
-                table_name="transactions",
+                table_name="transactions_staging",
                 schema="staging"
             )
 
