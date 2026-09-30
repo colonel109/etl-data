@@ -127,7 +127,7 @@ class SalesDataProcessor:
                 base_price, discount_percent, discounted_price,
                 discounted_price_tax, sales_amount, sales_amount_fc,
                 tax_amount, tax_amount_fc, sales_amount_tax,
-                sales_amount_fc_tax, return_quantity, remark, order_type_key
+                sales_amount_fc_tax, return_quantity, remark, order_type_key, bp_address_code
             )
             SELECT
                 business_partner_key,
@@ -155,7 +155,8 @@ class SalesDataProcessor:
                 t.sales_amount_tax, t.sales_amount_fc_tax,
                 t.return_quantity,
                 t.remark,
-                COALESCE(ots.order_type_key, 0) AS order_type_key
+                COALESCE(ots.order_type_key, 0) AS order_type_key,
+                bp_address_code
             FROM staging.transactions_staging t
             JOIN main.business_partner bp 
                 ON t.business_partner_code = bp.business_partner_code 

@@ -198,6 +198,10 @@
     "dtype": "numeric",
     "exclusive": "ar_invoice"
   },
+  "bp_address_code": {
+    "raw_name": ["Address Code"],
+    "dtype": "string"
+  },
   "remark": {
     "raw_name": ["Remark", "COMMENTS"],
     "dtype": "string"
