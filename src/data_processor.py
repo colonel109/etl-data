@@ -127,7 +127,7 @@ class SalesDataProcessor:
                 base_price, discount_percent, discounted_price,
                 discounted_price_tax, sales_amount, sales_amount_fc,
                 tax_amount, tax_amount_fc, sales_amount_tax,
-                sales_amount_fc_tax, return_quantity, remark, order_type_key, bp_address_code
+                sales_amount_fc_tax, return_quantity, remark, order_type_key, location_key
             )
             SELECT
                 business_partner_key,
@@ -156,14 +156,16 @@ class SalesDataProcessor:
                 t.return_quantity,
                 t.remark,
                 COALESCE(ots.order_type_key, 0) AS order_type_key,
-                bp_address_code
+                COALESCE(st.location_key, 0) AS location_key
             FROM staging.transactions_staging t
             JOIN main.business_partner bp 
                 ON t.business_partner_code = bp.business_partner_code 
             AND (t.posting_date >= bp.valid_from AND (t.posting_date <= bp.valid_to OR bp.valid_to IS NULL))
+            JOIN main.business_partner_group bpg ON bp.bp_group_key = bpg.bp_group_key
             JOIN main.scenario s ON t.scenario_name = s.scenario_name
             LEFT JOIN main.product p ON t.product_code = p.product_code 
             LEFT JOIN main.product pm ON t.source_product_code = pm.product_code
+            LEFT JOIN main.store_location st ON TRIM(t.location_code) = st.location_code AND st.bp_group_key = bpg.bp_group_key
             LEFT JOIN staging.document_type_staging dts ON t.document_type_name = dts.raw_value
             LEFT JOIN staging.sell_type_staging sts ON t.sell_type_name = sts.raw_value
             LEFT JOIN staging.cost_center_staging ccs ON t.cost_center_code = ccs.raw_value
